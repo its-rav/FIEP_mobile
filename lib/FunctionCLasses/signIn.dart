@@ -48,9 +48,7 @@ Future<bool> validateAccount() async {
     );
 
     if (response.statusCode == 200) {
-      Map<String, dynamic> js = json.decode(response.body);
-      int errorCode = js["errorCode"];
-      if (errorCode == 0) return true;
+      return true;
     }
   }
   return false;

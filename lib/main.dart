@@ -1,4 +1,4 @@
-import 'file:///E:/FPTU/Summer2020/SWD391/Project/fiep_app/lib/FunctionCLasses/colorConvert.dart';
+import 'package:fiepapp/FunctionCLasses/colorConvert.dart';
 import 'package:flutter/material.dart';
 
 import 'Pages/login.dart';

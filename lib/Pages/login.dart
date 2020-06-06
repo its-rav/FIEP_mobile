@@ -1,9 +1,11 @@
 import 'dart:developer';
 
-import 'file:///E:/FPTU/Summer2020/SWD391/Project/fiep_app/lib/Pages/home.dart';
+
 import 'package:fiepapp/FunctionCLasses/signIn.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
