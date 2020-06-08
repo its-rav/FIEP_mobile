@@ -8,6 +8,9 @@ final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
 Future<String> signInWithGoogle() async {
+
+  await googleSignIn.signOut();
+
   GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   GoogleSignInAuthentication authentication =
       await googleSignInAccount.authentication;
@@ -23,22 +26,21 @@ Future<String> signInWithGoogle() async {
     if (await user.getIdToken() != null) {
       String token = await user.getIdToken().then((value) => value.token);
       logLongString(token);
-      final FirebaseUser currentUser = await _auth.currentUser();
-      if (user.uid == currentUser.uid) return token;
+      return token;
     }
   }
   return null;
 }
 
-Future<bool> validateAccount() async {
+Future<int> validateAccount() async {
   String idToken;
 
-  signInWithGoogle().then((value) {
+  await signInWithGoogle().then((value) {
     idToken = value;
   });
   if (idToken != null) {
     final response = await http.post(
-      "https://localhost:5001/api/user/login",
+      "https://fiepapi.azurewebsites.net/api/Auth/login",
       headers: <String, String>{
         "Content-Type": "application/json; charset=UTF-8",
       },
@@ -47,11 +49,9 @@ Future<bool> validateAccount() async {
       }),
     );
 
-    if (response.statusCode == 200) {
-      return true;
-    }
+    return response.statusCode;
   }
-  return false;
+  return -1;
 }
 
 void logLongString(String s) {
@@ -70,6 +70,8 @@ void logLongString(String s) {
 }
 
 void signOutGoogle() async {
+
+
   await googleSignIn.signOut();
 
   print("User Sign Out");

@@ -1,9 +1,7 @@
-import 'dart:developer';
-
-
 import 'package:fiepapp/FunctionCLasses/signIn.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gradient_text/gradient_text.dart';
 
 import 'home.dart';
 
@@ -15,8 +13,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String _email, _password;
-  final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  String _text = "";
 
   @override
   Widget build(BuildContext context) {
@@ -25,58 +22,141 @@ class _LoginPageState extends State<LoginPage> {
       appBar: new AppBar(
         title: Text("FIEP"),
       ),
-      body: new Form(
-        key: _formKey,
-        child: new Column(
-          children: <Widget>[
-            new TextFormField(
-              decoration: new InputDecoration(labelText: "Email"),
-              validator: (value) {
-                if (value.isEmpty) return "Please input email";
-              },
-              onSaved: (value) => _email = value,
-            ),
-            new TextFormField(
-              decoration: new InputDecoration(labelText: "Password"),
-              validator: (value) {
-                if (value.isEmpty) return "Please input password";
-              },
-              onSaved: (value) => _password = value,
-              obscureText: true,
-            ),
-            new RaisedButton(
-              onPressed: login,
-              child: Text("Login"),
-            ),
-            new OutlineButton(
-                child: Text("Sign in with Google"),
-                onPressed: () {
-                  if (validateAccount() == true)
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                        ModalRoute.withName('/'));
-                })
-          ],
+      body: new Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/login/school.jpg"),
+            fit: BoxFit.cover,
+
+          )
+
         ),
-      ),
+        child: new Center(
+
+          child: new Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 85, top: 10),
+                      child: Text("FPT Internal Event Platform",
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.orange,
+                            fontWeight: FontWeight.bold
+                          )
+                      ),
+                    ),
+
+
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 200),
+                      child: Row(
+                        crossAxisAlignment:  CrossAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          GradientText("FPT",
+                            gradient: LinearGradient(
+                              colors: [Colors.purple, Colors.deepOrange, Colors.pink],
+                            ),
+                            style: TextStyle(fontSize: 120, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic),
+                          ),
+                          Text("IEP",
+                          style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold, color : Colors.blueAccent)
+                          )
+                        ],
+                      ),
+                    ),
+
+                  _signInButton(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(_text,
+                        style: TextStyle(fontSize: 15, color: Colors.red, fontWeight: FontWeight.bold)),
+                  )
+                ],
+              ),
+
+          ),
+        ),
+
     );
   }
 
-  void login() async {
-    FormState formState = _formKey.currentState;
-    if (formState.validate()) {
-      formState.save();
-      print(_email + " - " + _password);
-      try {
-        FirebaseUser user = (await FirebaseAuth.instance
-                .signInWithEmailAndPassword(email: _email, password: _password))
-            .user;
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
-      } catch (e) {
-        log("Error user");
-      }
-    }
+  Widget _signInButton() {
+    return FlatButton(
+        color: Colors.white.withOpacity(0.8),
+        focusColor: Colors.white.withOpacity(1.0),
+        onPressed: () async {
+          signOutGoogle();
+          int response = await validateAccount();
+          if (response == 200) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+                ModalRoute.withName('/'));
+            setState(() {
+              _text = "";
+            });
+
+          } else if(response == 401) {
+            setState(() {
+              _text = "Error. User don't have authorized!";
+            });
+
+          }
+          else{
+            setState(() {
+              _text = "An error has occurred. Please try app later!";
+            });
+          }
+
+
+         /* _check = 0;
+
+          String token = await signInWithGoogle();
+          if(token != null){
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => HomePage()),
+                ModalRoute.withName('/'));
+          }
+
+          else{
+            _check = -1;
+          }*/
+
+        },
+
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(right: 10),
+                child: Text(
+                  "Sign in with Google",
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+              Image(
+                image: AssetImage("images/login/google_logo.png"),
+                height: 35.0,
+                width: 35.0,
+              ),
+            ],
+          ),
+        ),
+      );
   }
+
 }
