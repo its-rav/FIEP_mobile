@@ -1,6 +1,7 @@
 import 'package:fiepapp/FunctionCLasses/signIn.dart';
 import 'package:fiepapp/Pages/login.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
 
 class HomePage extends StatefulWidget{
   @override
@@ -163,11 +164,11 @@ class _HomeState extends State<HomePage> {
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: <Widget>[
-                            MyArticles("images/home/do_an.jpg","K? b?o v? d? �n th�ng 5/2020 �H FPT TP.HCM","13/05/2020"),
-                            MyArticles("images/home/talkshow_cv.jpg","Talkshow-livestream: L�m CV chuy�n nghi?p c� kh� nhu b?n nghi? - Take it easy","21/05/2020"),
-                            MyArticles("images/home/thankyounote.jpg","Thank you note: Th? th�ch b�y t? l�ng bi?t on v?i cu?c s?ng","16/05/2020"),
-                            MyArticles("images/home/capstone.jpg","Chu?i Seminar Capstone Companion","30/05/2020"),
-                            MyArticles("images/home/byeCovid.jpg","Khai m?c gi?i d?u B�ng d� ByeCovid, chia tay k? ngh? d?ch","20/05/2020"),
+                            MyArticles("images/home/do_an.jpg","Kỳ bảo vệ đồ án tháng 5/2020 ĐH FPT TP.HCM","13/05/2020"),
+                            MyArticles("images/home/talkshow_cv.jpg","Talkshow-livestream: Làm CV chuyên nghiệp có khó như bạn nghĩ? - Take it easy","21/05/2020"),
+                            MyArticles("images/home/thankyounote.jpg","Thank you note: Thử thách bày tỏ lòng biết ơn với cuộc sống","16/05/2020"),
+                            MyArticles("images/home/capstone.jpg","Chuỗi Seminar Capstone Companion","30/05/2020"),
+                            MyArticles("images/home/byeCovid.jpg","Khai mạc giải đấu Bóng đá ByeCovid, chia tay kỳ nghỉ dịch","20/05/2020"),
                           ],
                         ),
                       ),
@@ -209,11 +210,11 @@ class _HomeState extends State<HomePage> {
                         child: ListView(
                           scrollDirection: Axis.horizontal,
                           children: <Widget>[
-                            MyClub("images/home/fcc.png","C�u l?c b? C? FCC"),
-                            MyClub("images/home/fev.jpg","C�u l?c b? t? ch?c s? ki?n FEV"),
-                            MyClub("images/home/cocsaigon.jpg","C�u l?c b? truy?n th�ng C�c S�i G�n"),
-                            MyClub("images/home/siti.jpg","C�u l?c b? nh?c c? truy?n th?ng"),
-                            MyClub("images/home/mec.jpg","C�u l?c b? truy?n th�ng MEC"),
+                            MyClub("images/home/fcc.png","Câu lạc bộ Cờ FCC"),
+                            MyClub("images/home/fev.jpg","Câu lạc bộ tổ chức sự kiện FEV"),
+                            MyClub("images/home/cocsaigon.jpg","Câu lạc bộ truyền thông Cóc Sài Gòn"),
+                            MyClub("images/home/siti.jpg","Câu lạc bộ nhạc cụ truyền thống"),
+                            MyClub("images/home/mec.jpg","Câu lạc bộ truyền thông MEC"),
                           ],
                         ),
                       ),
