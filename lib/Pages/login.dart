@@ -92,6 +92,7 @@ class _LoginPageState extends State<LoginPage> {
         onPressed: () async {
           signOutGoogle();
           int response = await validateAccount();
+
           if (response == 200) {
             Navigator.pushAndRemoveUntil(
                 context,
