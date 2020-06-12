@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
-final String apiUrl="https://fiepapi.azurewebsites.net/api";
-//final String apiUrl="http://171.235.181.73:8080/api";
+//final String apiUrl="https://fiepapi.azurewebsites.net/api";
+final String apiUrl="http://171.235.181.73:8080/api";
 
 Future<String> signInWithGoogle() async {
 

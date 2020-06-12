@@ -2,6 +2,7 @@ import 'package:fiepapp/FunctionCLasses/colorConvert.dart';
 import 'package:flutter/material.dart';
 
 import 'Pages/login.dart';
+import 'Services/push_notification_service.dart';
 
 void main() {
   runApp(MyApp());
@@ -9,8 +10,10 @@ void main() {
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  PushNotificationService _pushNotificationService=PushNotificationService();
   @override
   Widget build(BuildContext context) {
+    _pushNotificationService.init();
           return MaterialApp(
             title: "FIEP",
             theme: ThemeData(
