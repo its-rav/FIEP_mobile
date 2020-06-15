@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "577854979934-dsin5ig8f63m4ls9sn5k9jd1ekqqppj8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "0932e4d83e0f190c10a3f2671082a8b4d3f9809f"
+          }
+        },
+        {
           "client_id": "577854979934-vtvmjfk802o3q6acmssup9d7u3a7sf4h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

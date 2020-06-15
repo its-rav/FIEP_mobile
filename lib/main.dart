@@ -1,7 +1,9 @@
-import 'package:fiepapp/FunctionCLasses/colorConvert.dart';
+import 'file:///D:/SWD-Project/FIEP%2520Android%2520App/lib/ViewModel/colorConvert.dart';
+import 'package:fiepapp/View/home.dart';
 import 'package:flutter/material.dart';
 
-import 'Pages/login.dart';
+import 'View/login.dart';
+import 'View/searchResult.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: "FIEP",
             theme: ThemeData(
               primarySwatch: Colors.orange,
@@ -21,7 +24,10 @@ class MyApp extends StatelessWidget {
               secondaryHeaderColor: convertColor("#ffe082"),
               textSelectionColor: convertColor("#000000"),
             ),
-            home: LoginPage(),
+            home: HomePage(),
+            routes: <String, WidgetBuilder>{
+              '/searchResult': (BuildContext context) => new SearchResultPage()
+            },
           );
 
 
