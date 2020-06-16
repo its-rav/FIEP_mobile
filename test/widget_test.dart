@@ -8,7 +8,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:fiepapp/main.dart';
+import 'file:///D:/FPTU/Summer2020/SWD391/Project/FIEP%2520Android%2520App/lib/View/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {

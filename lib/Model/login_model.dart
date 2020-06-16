@@ -9,8 +9,6 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 
 Future<String> signInWithGoogle() async {
 
-  await googleSignIn.signOut();
-
   GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   GoogleSignInAuthentication authentication =
       await googleSignInAccount.authentication;
@@ -70,7 +68,6 @@ void logLongString(String s) {
 }
 
 void signOutGoogle() async {
-
 
   await googleSignIn.signOut();
 
