@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-class PushNotificationService{
+class PushNotificationService {
   PushNotificationService._();
 
   factory PushNotificationService() => _instance;
@@ -14,25 +14,29 @@ class PushNotificationService{
 
   Future<void> init() async {
     if (!_initialized) {
-      if(Platform.isIOS){
+      if (Platform.isIOS) {
         _fcm.requestNotificationPermissions(IosNotificationSettings());
+      } else {
+        _fcm.requestNotificationPermissions();
       }
-
       _fcm.configure(
-          //Called when the app is in the foreground and we receive a push notification
-          onMessage: (Map<String,dynamic> message) async{
-        print('onMessage: $message');
-      },
+        //Called when the app is in the foreground and we receive a push notification
+        onMessage: (Map<String, dynamic> message) async {
+          print('onMessage: $message');
+        },
         //Called when the app has been closed completely and its opened
-        onLaunch: (Map<String,dynamic> message) async{
-        print('onLaunch: $message');
+        onLaunch: (Map<String, dynamic> message) async {
+          print('onLaunch: $message');
         },
         //Called when the app is in the background
-        onResume: (Map<String,dynamic> message) async{
-        print('onResume: $message');
-    },
+        onResume: (Map<String, dynamic> message) async {
+          print('onResume: $message');
+        },
       );
+      String token = await _fcm.getToken();
+      print("FirebaseMessaging token: $token");
+
+      _initialized = true;
     }
   }
-
 }
