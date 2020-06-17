@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "904200690978-ook41chgbs5r5h7ft83hqot6upts3p1h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "5aa242d71a3e6cf573787562fc7d0d436b6e9a01"
+          }
+        },
+        {
+          "client_id": "904200690978-4q86kcghifb4va3qtm8umn9qkq0rugld.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "426af6fc378ceaa2e71091726f3c886cf8a26375"
+          }
+        },
+        {
           "client_id": "904200690978-f6e65g1cjv2vmm6j8cqg6rqru66k6r1m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
