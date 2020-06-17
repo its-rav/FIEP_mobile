@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final String apiUrl="https://fiepapi.azurewebsites.net/api";
+//final String apiUrl="http://171.235.181.73:8080/api";
 
 Future<String> signInWithGoogle() async {
 
@@ -37,8 +39,9 @@ Future<int> validateAccount() async {
     idToken = value;
   });
   if (idToken != null) {
+    print("API Url: "+apiUrl+"/auth/login");
     final response = await http.post(
-      "https://fiepapi.azurewebsites.net/api/Auth/login",
+      apiUrl+"/auth/login",
       headers: <String, String>{
         "Content-Type": "application/json; charset=UTF-8",
       },
@@ -46,7 +49,6 @@ Future<int> validateAccount() async {
         "idToken": idToken,
       }),
     );
-
     return response.statusCode;
   }
   return -1;

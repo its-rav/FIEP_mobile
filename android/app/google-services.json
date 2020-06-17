@@ -1,5 +1,9 @@
 {
   "project_info": {
+    "project_number": "904200690978",
+    "firebase_url": "https://fbase-research.firebaseio.com",
+    "project_id": "fbase-research",
+    "storage_bucket": "fbase-research.appspot.com"
     "project_number": "577854979934",
     "firebase_url": "https://fiep-e6602.firebaseio.com",
     "project_id": "fiep-e6602",
@@ -8,6 +12,7 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:904200690978:android:6461b5f2165424cc02197b",
         "mobilesdk_app_id": "1:577854979934:android:011876c6f0d25e24f559cf",
         "android_client_info": {
           "package_name": "com.fiep"
@@ -15,6 +20,7 @@
       },
       "oauth_client": [
         {
+          "client_id": "904200690978-f6e65g1cjv2vmm6j8cqg6rqru66k6r1m.apps.googleusercontent.com",
           "client_id": "577854979934-dsin5ig8f63m4ls9sn5k9jd1ekqqppj8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -55,6 +61,7 @@
           }
         },
         {
+          "client_id": "904200690978-mvhp49argo0l1j7pbc66513jkjcdrpn3.apps.googleusercontent.com",
           "client_id": "577854979934-98f44bp2729ov231bjd3m29b7hbml02i.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -69,6 +76,7 @@
       ],
       "api_key": [
         {
+          "current_key": "AIzaSyCpkZ5_9R55Noh1qFC34Vbu_Wwafjxri54"
           "current_key": "AIzaSyAYMPJHSyAa9J2VVZeH47Wzca3N-v_Oojc"
         }
       ],
@@ -76,6 +84,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
+              "client_id": "904200690978-mvhp49argo0l1j7pbc66513jkjcdrpn3.apps.googleusercontent.com",
               "client_id": "577854979934-ehp2v41rro7tf4tnbfmdofd1lr6qlos7.apps.googleusercontent.com",
               "client_type": 3
             }

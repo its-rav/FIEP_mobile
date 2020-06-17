@@ -6,7 +6,7 @@ import 'package:fiepapp/Model/login_model.dart';
 class LoginViewModel{
 
 
-  StreamController<String> _textController = new StreamController();
+  StreamController<String> _textController = new StreamController<String>.broadcast();
   Sink get textSink => _textController;
 
 
