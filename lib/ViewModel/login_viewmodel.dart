@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/Model/login_model.dart';
 
 
@@ -22,25 +23,33 @@ class LoginViewModel{
   Future<String> changeEventLogin() async {
     signOutGoogle();
     String text;
-    int code = await validateAccount();
-    print("Status code: $code");
-    if(code == 200){
-      text = "";
+    try {
+      String token = await validateAccount();
+      print("Status code: $token");
+      if (token != null) {
+        text = "";
+      }
+      else {
+        text = "An error has occurred. Please try app later!";
+      }
+    } on FetchDataException{
+      text = "Error internet connection";
     }
-    else if(code == 401){
-      text = "Error. User don't have authorized!";
+
+    on BadRequestException{
+      text = "Missing request field";
     }
-    else{
-      text = "An error has occurred. Please try app later!";
+
+    on UnauthorisedException{
+      text = "Error user don't have authorization";
     }
+
 
     return text;
    // text = await signInWithGoogle();
   }
 
   Stream<String> get textStream => _textController.stream;
-
-
 
   dispose(){
     _textController.close();
