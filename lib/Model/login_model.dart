@@ -56,7 +56,7 @@ Future<String> validateAccount() async {
   Map<String, String> map = new Map();
   map['idToken'] = idToken;
   map['fcmToken'] = await _pushNotificationService.init();
-  dynamic json  = api.post("Auth/Login", map);
+  dynamic json  = api.post("auth/login", map);
   return json['jswToken'];
   }
   return null;
