@@ -1,21 +1,21 @@
-import 'dart:convert';
 
+import 'package:fiepapp/API/api_helper.dart';
+import 'package:fiepapp/Services/push_notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:http/http.dart' as http;
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
-//final String apiUrl="https://fiepapi.azurewebsites.net/api";
-final String apiUrl="http://171.235.181.73:8080/api";
+final PushNotificationService _pushNotificationService=PushNotificationService();
 
 Future<String> signInWithGoogle() async {
-
-  await googleSignIn.signOut();
 
   GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
   GoogleSignInAuthentication authentication =
       await googleSignInAccount.authentication;
+
+
+
 
   final AuthCredential credential = GoogleAuthProvider.getCredential(
     accessToken: authentication.accessToken,
@@ -34,26 +34,32 @@ Future<String> signInWithGoogle() async {
   return null;
 }
 
-Future<int> validateAccount() async {
+Future<String> validateAccount() async {
   String idToken;
 
   await signInWithGoogle().then((value) {
     idToken = value;
   });
   if (idToken != null) {
-    print("API Url: "+apiUrl+"/auth/login");
-    final response = await http.post(
-      apiUrl+"/auth/login",
-      headers: <String, String>{
-        "Content-Type": "application/json; charset=UTF-8",
-      },
-      body: jsonEncode(<String, String>{
-        "idToken": idToken,
-      }),
-    );
-    return response.statusCode;
+//    print("API Url: "+apiUrl+"/auth/login");
+//    final response = await http.post(
+//      apiUrl+"/auth/login",
+//      headers: <String, String>{
+//        "Content-Type": "application/json; charset=UTF-8",
+//      },
+//      body: jsonEncode(<String, String>{
+//        "idToken": idToken,
+//      }),
+//    );
+//    return response.statusCode;
+  ApiHelper api = new ApiHelper();
+  Map<String, String> map = new Map();
+  map['idToken'] = idToken;
+  map['fcmToken'] = await _pushNotificationService.init();
+  dynamic json  = api.post("auth/login", map);
+  return json['jswToken'];
   }
-  return -1;
+  return null;
 }
 
 void logLongString(String s) {
@@ -72,7 +78,6 @@ void logLongString(String s) {
 }
 
 void signOutGoogle() async {
-
 
   await googleSignIn.signOut();
 

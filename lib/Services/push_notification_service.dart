@@ -12,7 +12,7 @@ class PushNotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging();
   bool _initialized = false;
 
-  Future<void> init() async {
+  Future<String> init() async {
     if (!_initialized) {
       if (Platform.isIOS) {
         _fcm.requestNotificationPermissions(IosNotificationSettings());
@@ -37,6 +37,7 @@ class PushNotificationService {
       print("FirebaseMessaging token: $token");
 
       _initialized = true;
+      return token;
     }
   }
 }
