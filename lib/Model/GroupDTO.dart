@@ -32,7 +32,7 @@ class GroupDTO{
 
   factory GroupDTO.fromJson(dynamic json, int groupID){
     return GroupDTO(
-        groupID as int,
+        groupID,
         json['groupFollower'] as int,
         json['groupName'] as String,
         json['groupImageUrl'] as String

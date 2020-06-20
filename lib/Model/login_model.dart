@@ -28,36 +28,28 @@ Future<String> signInWithGoogle() async {
     if (await user.getIdToken() != null) {
       String token = await user.getIdToken().then((value) => value.token);
       logLongString(token);
+      final FirebaseUser currentUser = await _auth.currentUser();
+
+      if(user.uid == currentUser.uid)
       return token;
+
     }
   }
   return null;
 }
 
-Future<String> validateAccount() async {
+Future<String> validateAccount() async{
   String idToken;
-
-  await signInWithGoogle().then((value) {
-    idToken = value;
-  });
-  if (idToken != null) {
-//    print("API Url: "+apiUrl+"/auth/login");
-//    final response = await http.post(
-//      apiUrl+"/auth/login",
-//      headers: <String, String>{
-//        "Content-Type": "application/json; charset=UTF-8",
-//      },
-//      body: jsonEncode(<String, String>{
-//        "idToken": idToken,
-//      }),
-//    );
-//    return response.statusCode;
-  ApiHelper api = new ApiHelper();
-  Map<String, String> map = new Map();
-  map['idToken'] = idToken;
-  map['fcmToken'] = await _pushNotificationService.init();
-  dynamic json  = api.post("auth/login", map);
-  return json['jswToken'];
+    await signInWithGoogle().then((value) {
+      idToken = value;
+    });
+    if (idToken != null) {
+      ApiHelper api = new ApiHelper();
+      Map<String, String> map = new Map();
+      map['idToken'] = idToken;
+      map['fcmToken'] = await _pushNotificationService.init();
+      dynamic json  = api.post("auth/login", map).catchError((Object error) {throw Exception();});
+      return json['jwtToken'];
   }
   return null;
 }
