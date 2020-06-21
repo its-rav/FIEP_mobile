@@ -3,20 +3,39 @@ import 'dart:math';
 import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:fiepapp/Model/GroupDAO.dart';
 import 'package:fiepapp/Model/GroupDTO.dart';
+import 'package:fiepapp/View/event_home.dart';
+import 'package:fiepapp/View/search_view.dart';
 import 'package:flutter/material.dart';
 
 class GroupPage extends StatefulWidget {
+
+  final int id;
+
   @override
   _GroupState createState() {
     // TODO: implement createState
     return new _GroupState();
   }
+
+
+  GroupPage(this.id);
 }
 
 class _GroupState extends State<GroupPage> {
   GroupDAO dao;
   Future<GroupDTO> groupDTO;
   Future<List<EventDTO>> list;
+
+
+  _GroupState();
+
+  @override
+  void initState() {
+    super.initState();
+    dao = new GroupDAO();
+    groupDTO = dao.getGroup(widget.id);
+    list = dao.getEventofGroup(widget.id);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,74 +49,63 @@ class _GroupState extends State<GroupPage> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              SizedBox(height: 15.0),
-              Stack(children: <Widget>[
-
-                Container(
-                  height: 50,
-                  child: ButtonBar(),
-                ),
-
-                Positioned(
-                  top: MediaQuery.of(context).viewInsets.top,
-                  left: 0,
-                  right: 0,
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        new IconButton(
-                          icon: Icon(Icons.home),
-                          color: Colors.black,
-                          iconSize: 30,
-                          onPressed: () {},
+              SizedBox(height: 40.0),
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    new IconButton(
+                      icon: Icon(Icons.home),
+                      color: Colors.black,
+                      iconSize: 30,
+                      onPressed: () {},
+                    ),
+                    Flexible(
+                      child: Material(
+                        elevation: 10.0,
+                        borderRadius: BorderRadius.circular(25.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              prefixIcon:
+                              Icon(Icons.search, color: Colors.black),
+                              contentPadding:
+                              EdgeInsets.only(left: 15.0, top: 15.0),
+                              hintText: 'Search for events',
+                              hintStyle: TextStyle(color: Colors.grey)),
+                            onFieldSubmitted: (String input){
+                              if(input.trim().isNotEmpty)
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResultPage(input) ));
+                            }
                         ),
-                        Flexible(
-                          child: Material(
-                            elevation: 10.0,
-                            borderRadius: BorderRadius.circular(25.0),
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  prefixIcon:
-                                  Icon(Icons.search, color: Colors.black),
-                                  contentPadding:
-                                  EdgeInsets.only(left: 15.0, top: 15.0),
-                                  hintText: 'Search for events',
-                                  hintStyle: TextStyle(color: Colors.grey)),
-                            ),
-                          ),
-                        ),
-                        new IconButton(
-                          icon: Icon(Icons.account_circle),
-                          color: Colors.black,
-                          iconSize: 30,
-                          onPressed: () {},
-                        ),
-                      ]),
-                ),
+                      ),
+                    ),
+                    new IconButton(
+                      icon: Icon(Icons.account_circle),
+                      color: Colors.black,
+                      iconSize: 30,
+                      onPressed: () {},
+                    ),
+                  ]),
 
 
 
-              ]),
+                    SizedBox(height: 15.0),
+                    getGroupUI(),
+                    getEventUI(),
 
-              SizedBox(height: 15.0),
-              getGroupUI(),
-              getEventUI(),
+
+
+
+
+
 
             ],
           )),
         ));
   }
 
-  @override
-  void initState() {
-    super.initState();
-    dao = new GroupDAO();
-    groupDTO = dao.getGroup(2);
-    list = dao.getEventofGroup(2);
-  }
 
   @override
   void dispose() {
@@ -118,10 +126,9 @@ class _GroupState extends State<GroupPage> {
     return FutureBuilder<GroupDTO>(
         future: groupDTO,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text("Thằng Nhân tắt máy cmnr :)))");
+          if(!snapshot.hasData){
+            return Container();
           }
-
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -175,19 +182,12 @@ class _GroupState extends State<GroupPage> {
                               color: Colors.orange,
                               style: BorderStyle.solid,
                               width: 3.0))),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text('EVENTS',
+                  child: Text('EVENTS',
                             style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: 'Timesroman',
                                 fontWeight: FontWeight.bold)),
-                        IconButton(
-                            icon: Icon(Icons.control_point),
-                            iconSize: 30,
-                            onPressed: () {}),
-                      ]),
+
                 ),
               ]);
         });
@@ -224,7 +224,9 @@ class _GroupState extends State<GroupPage> {
                               color: Colors.grey),
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       child: InkWell(
-                        onTap: () => print("ciao"),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => EventPage()));
+                        },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
@@ -334,9 +336,8 @@ class _GroupState extends State<GroupPage> {
               ],
             );
           }
-        } else {
-          return Text("Nothing to show");
         }
+          return Container();
       },
     );
   }

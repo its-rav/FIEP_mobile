@@ -2,7 +2,7 @@ import 'package:fiepapp/ViewModel/login_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'home.dart';
+import 'home_view.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -19,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     return ScopedModel(
      model: new LoginViewModel(),
       child: Scaffold(
+        resizeToAvoidBottomPadding: false,
         body: new Container(
           decoration: BoxDecoration(
               image: DecorationImage(

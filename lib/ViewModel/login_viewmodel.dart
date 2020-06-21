@@ -1,12 +1,8 @@
-import 'dart:async';
-
 import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/Model/login_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-
-class LoginViewModel extends Model{
-
+class LoginViewModel extends Model {
   static LoginViewModel _instance;
 
   static LoginViewModel getInstance() {
@@ -20,53 +16,36 @@ class LoginViewModel extends Model{
     _instance = null;
   }
 
-bool isLoading = false;
-String text;
+  bool isLoading = false;
+  String text;
 
-
-
-  LoginViewModel(){
-  }
-
-//  Future<void> changeEvent() async {
-//    String message = await getEventLogin();
-//    textSink.add(message);
-//  }
+  LoginViewModel() {}
 
   void changeEventLogin() async {
     signOutGoogle();
     isLoading = true;
     notifyListeners();
     try {
-      //String token = await validateAccount();
-      String token = await signInWithGoogle();
+      String token = await validateAccount();
+      //String token = await signInWithGoogle();
 
       if (token != null) {
         text = "";
-      }
-      else {
+      } else {
         text = "An error has occurred. Please try app later!";
       }
-    }on FetchDataException{
+    } on FetchDataException {
       text = "Error internet connection";
-    }
-
-    on BadRequestException{
+    } on BadRequestException {
       text = "Missing request field";
-    }
-
-    on UnauthorisedException{
+    } on UnauthorisedException {
       text = "Error user don't have authorization";
-    }
-    on Exception{
+    } on Exception {
       text = "An error has occurred. Please try app later!";
     }
     isLoading = false;
     print("Text: $text");
     notifyListeners();
-   // text = await signInWithGoogle();
+    // text = await signInWithGoogle();
   }
-
-
-
 }

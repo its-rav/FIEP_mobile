@@ -30,12 +30,27 @@ class GroupDTO{
     _id = value;
   }
 
+
+  @override
+  String toString() {
+    return 'GroupDTO{_id: $_id, _follower: $_follower, _name: $_name, _imageUrl: $_imageUrl}';
+  }
+
   factory GroupDTO.fromJson(dynamic json, int groupID){
     return GroupDTO(
         groupID,
         json['groupFollower'] as int,
         json['groupName'] as String,
         json['groupImageUrl'] as String
+    );
+  }
+
+  factory GroupDTO.fromJsonAll(dynamic json){
+    return GroupDTO(
+        json['groupID'] as int,
+        json['groupFollower'] as int,
+        json['groupName'] as String,
+        json['imageUrl'] as String
     );
   }
 }

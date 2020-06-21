@@ -49,6 +49,18 @@ class EventDTO {
 
   factory EventDTO.fromJson(dynamic json, int id) {
     return EventDTO(
+      id as int,
+      json['approveState'] as int,
+      json['eventName'] as String,
+      json['imageUrl'] as String,
+      json['location'] as String,
+      json['timeOccur'] as String,
+      json['createDate'] as String,
+    );
+  }
+
+  factory EventDTO.fromJsonAll(dynamic json) {
+    return EventDTO(
       json['eventID'] as int,
       json['approveState'] as int,
       json['eventName'] as String,

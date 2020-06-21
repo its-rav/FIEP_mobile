@@ -7,13 +7,14 @@ class ApiHelper {
 
 
 
-  final String _baseUrl = "https://fiepapi.azurewebsites.net/api/";
+  final String _baseUrl = "https://171.235.181.73:8081/api/";
 
   Future<dynamic> get(String url) async {
     var responseJson;
     try {
       final response = await http.get(_baseUrl + url);
-      print(_baseUrl+url);
+      print("Ahihi URL: " + _baseUrl+url);
+      print("Status code: " + response.statusCode.toString());
       responseJson = returnResponse(response);
     } on SocketException {
       throw FetchDataException('No Internet connection');
@@ -59,4 +60,12 @@ class ApiHelper {
   }
 
   ApiHelper();
+}
+
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+  }
 }
