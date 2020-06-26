@@ -1,6 +1,5 @@
-import 'package:fiepapp/API/api_helper.dart';
+import 'package:fiepapp/Model/EventDAO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
-import 'file:///D:/FPTU/Summer2020/SWD391/Project/FIEP%2520Android%2520App/lib/Model/EventDAO.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class SearchViewModel extends Model{

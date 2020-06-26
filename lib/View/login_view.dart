@@ -52,48 +52,40 @@ class _LoginPageState extends State<LoginPage> {
   Widget _textState() {
     return ScopedModelDescendant<LoginViewModel>(
 
-        builder: (BuildContext context, Widget child, LoginViewModel model) {
-          
-          if(model.isLoading){
-            return Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: CircularProgressIndicator(),
-                );
-          }
+          builder: (BuildContext context, Widget child, LoginViewModel model) {
+            
+            if(model.isLoading){
+              return Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: CircularProgressIndicator(),
+                  );
+            }
 
-          else if(model.text != null){
-            if(model.text == ""){
+            else if(model.text != null){
 
-              Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      ModalRoute.withName('/'));
+              return Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(model.text,
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold)),
+                  );
+              
 
             }
-              return Padding(
-                  padding: const EdgeInsets.only(top: 10),
-                  child: Text(model.text,
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.red,
-                          fontWeight: FontWeight.bold)),
-                );
+
+              return
+              Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: Text("",
+                  style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold)),
+            );
             
-
-          }
-
-            return
-            Padding(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text("",
-                style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold)),
-          );
-          
-        });
-
+          });
   }
 
   Container _welcome() {
@@ -130,9 +122,15 @@ class _LoginPageState extends State<LoginPage> {
           return FlatButton(
             color: Colors.white.withOpacity(0.8),
             focusColor: Colors.white.withOpacity(1.0),
-            onPressed: (){
-              model.changeEventLogin();
-              //_viewModel.textStream.listen((event) { print("Text: $event");});
+            onPressed: () async {
+              await model.changeEventLogin();
+              if(model.text == "") {
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    ModalRoute.withName('/'));
+              }
+
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
             child: Padding(

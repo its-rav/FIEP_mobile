@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
               secondaryHeaderColor: convertColor("#ffe082"),
               textSelectionColor: convertColor("#000000"),
             ),
-            home: HomePage(),
+            home: LoginPage(),
           );
 
 

@@ -8,7 +8,6 @@ import 'package:fiepapp/View/search_view.dart';
 import 'package:flutter/material.dart';
 
 class GroupPage extends StatefulWidget {
-
   final int id;
 
   @override
@@ -17,7 +16,6 @@ class GroupPage extends StatefulWidget {
     return new _GroupState();
   }
 
-
   GroupPage(this.id);
 }
 
@@ -25,7 +23,6 @@ class _GroupState extends State<GroupPage> {
   GroupDAO dao;
   Future<GroupDTO> groupDTO;
   Future<List<EventDTO>> list;
-
 
   _GroupState();
 
@@ -43,14 +40,13 @@ class _GroupState extends State<GroupPage> {
     return Scaffold(
         resizeToAvoidBottomPadding: false,
         body: Center(
-          child: SingleChildScrollView(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              SizedBox(height: 40.0),
-              Row(
+          child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(height: 40.0),
+                  Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,19 +62,22 @@ class _GroupState extends State<GroupPage> {
                         elevation: 10.0,
                         borderRadius: BorderRadius.circular(25.0),
                         child: TextFormField(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              prefixIcon:
-                              Icon(Icons.search, color: Colors.black),
-                              contentPadding:
-                              EdgeInsets.only(left: 15.0, top: 15.0),
-                              hintText: 'Search for events',
-                              hintStyle: TextStyle(color: Colors.grey)),
-                            onFieldSubmitted: (String input){
-                              if(input.trim().isNotEmpty)
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResultPage(input) ));
-                            }
-                        ),
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                prefixIcon:
+                                    Icon(Icons.search, color: Colors.black),
+                                contentPadding:
+                                    EdgeInsets.only(left: 15.0, top: 15.0),
+                                hintText: 'Search for events',
+                                hintStyle: TextStyle(color: Colors.grey)),
+                            onFieldSubmitted: (String input) {
+                              if (input.trim().isNotEmpty)
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SearchResultPage(input)));
+                            }),
                       ),
                     ),
                     new IconButton(
@@ -88,24 +87,13 @@ class _GroupState extends State<GroupPage> {
                       onPressed: () {},
                     ),
                   ]),
-
-
-
-                    SizedBox(height: 15.0),
-                    getGroupUI(),
-                    getEventUI(),
-
-
-
-
-
-
-
+              SizedBox(height: 15.0),
+              getGroupUI(),
+              getEventUI(),
             ],
           )),
-        ));
+        );
   }
-
 
   @override
   void dispose() {
@@ -126,7 +114,7 @@ class _GroupState extends State<GroupPage> {
     return FutureBuilder<GroupDTO>(
         future: groupDTO,
         builder: (context, snapshot) {
-          if(!snapshot.hasData){
+          if (!snapshot.hasData) {
             return Container();
           }
           return Column(
@@ -183,11 +171,10 @@ class _GroupState extends State<GroupPage> {
                               style: BorderStyle.solid,
                               width: 3.0))),
                   child: Text('EVENTS',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'Timesroman',
-                                fontWeight: FontWeight.bold)),
-
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: 'Timesroman',
+                          fontWeight: FontWeight.bold)),
                 ),
               ]);
         });
@@ -225,7 +212,10 @@ class _GroupState extends State<GroupPage> {
                           borderRadius: BorderRadius.all(Radius.circular(10))),
                       child: InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => EventPage()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EventPage()));
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -337,7 +327,7 @@ class _GroupState extends State<GroupPage> {
             );
           }
         }
-          return Container();
+        return Container();
       },
     );
   }

@@ -22,30 +22,34 @@ class LoginViewModel extends Model {
   LoginViewModel() {}
 
   void changeEventLogin() async {
-    signOutGoogle();
+   signOutGoogle();
+    //await Future.delayed(const Duration(milliseconds: 100), (){});
     isLoading = true;
+    text = null;
     notifyListeners();
     try {
-      String token = await validateAccount();
-      //String token = await signInWithGoogle();
-
+      //String token = await validateAccount();
+      String token = await signInWithGoogle();
       if (token != null) {
         text = "";
       } else {
         text = "An error has occurred. Please try app later!";
       }
+
     } on FetchDataException {
       text = "Error internet connection";
     } on BadRequestException {
       text = "Missing request field";
     } on UnauthorisedException {
       text = "Error user don't have authorization";
-    } on Exception {
-      text = "An error has occurred. Please try app later!";
+
+    } finally{
+      isLoading = false;
+      notifyListeners();
+
     }
-    isLoading = false;
-    print("Text: $text");
-    notifyListeners();
+
     // text = await signInWithGoogle();
   }
+
 }

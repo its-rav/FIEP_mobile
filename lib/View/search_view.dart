@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 class SearchResultPage extends StatefulWidget {
   String text;
+
   @override
   _SearchResultPage createState() {
     // TODO: implement createState
@@ -40,8 +41,7 @@ class _SearchResultPage extends State<SearchResultPage> {
               ),
             ),
             body: Center(
-              child: SingleChildScrollView(
-                  child: Column(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -104,31 +104,30 @@ class _SearchResultPage extends State<SearchResultPage> {
                 ],
               )),
             )),
-      ),
+
     );
   }
 
   Widget _searchBar() {
     return Flexible(
       child: Material(
-          elevation: 10.0,
-          borderRadius: BorderRadius.circular(25.0),
-          child: ScopedModelDescendant<SearchViewModel>(builder:
-              (BuildContext context, Widget child, SearchViewModel model) {
-            return TextFormField(
-              initialValue: widget.text,
-              decoration: InputDecoration(
-                  border: InputBorder.none,
-                  prefixIcon: Icon(Icons.search, color: Colors.black),
-                  contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                  hintText: 'Search for events',
-                  hintStyle: TextStyle(color: Colors.grey)),
-              onFieldSubmitted: (String input) {
-
-                if (input.trim().isNotEmpty) model.getEventResult(input);
-              },
-            );
-          }),
+        elevation: 10.0,
+        borderRadius: BorderRadius.circular(25.0),
+        child: ScopedModelDescendant<SearchViewModel>(builder:
+            (BuildContext context, Widget child, SearchViewModel model) {
+          return TextFormField(
+            initialValue: widget.text,
+            decoration: InputDecoration(
+                border: InputBorder.none,
+                prefixIcon: Icon(Icons.search, color: Colors.black),
+                contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+                hintText: 'Search for events',
+                hintStyle: TextStyle(color: Colors.grey)),
+            onFieldSubmitted: (String input) {
+              if (input.trim().isNotEmpty) model.getEventResult(input);
+            },
+          );
+        }),
       ),
     );
   }
@@ -136,10 +135,10 @@ class _SearchResultPage extends State<SearchResultPage> {
   Widget _searhResult() {
     return ScopedModelDescendant<SearchViewModel>(
         builder: (BuildContext context, Widget child, SearchViewModel model) {
-          if (widget.text != null) {
-            model.getEventResult(widget.text);
-            widget.text = null;
-          }
+      if (widget.text != null) {
+        model.getEventResult(widget.text);
+        widget.text = null;
+      }
       if (model.list != null && model.list.isNotEmpty) {
         return Container(
             margin: EdgeInsets.symmetric(horizontal: 20.0),
@@ -152,37 +151,34 @@ class _SearchResultPage extends State<SearchResultPage> {
                     height: 350.0,
                     child: Center(
                         child: Card(
-                          elevation: 10.0,
-                          shadowColor: Color(0x802196F3),
-                          child: Wrap(
-                            children: <Widget>[
-                              Image.network(
-                                dto.imageUrl,
-                                width: 370.0,
-                                height: 270.0,
-                              ),
-                              ListTile(
-                                title: Text(dto.name),
-                                subtitle: Text(dto.timeOccur),
-                              )
-                            ],
+                      elevation: 10.0,
+                      shadowColor: Color(0x802196F3),
+                      child: Wrap(
+                        children: <Widget>[
+                          Image.network(
+                            dto.imageUrl,
+                            width: 370.0,
+                            height: 270.0,
                           ),
-                        )),
+                          ListTile(
+                            title: Text(dto.name),
+                            subtitle: Text(dto.timeOccur),
+                          )
+                        ],
+                      ),
+                    )),
                   )
               ],
             ));
-      }
-      else if(model.isLoading){
+      } else if (model.isLoading) {
         return Padding(
           padding: const EdgeInsets.only(top: 10),
           child: CircularProgressIndicator(),
         );
-      }
-      else if(model.error){
+      } else if (model.error) {
         return Text("An Error has occured!");
       }
       return Text("Nothing found here");
-
     });
   }
 }

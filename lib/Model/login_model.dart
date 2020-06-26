@@ -28,9 +28,8 @@ Future<String> signInWithGoogle() async {
     if (await user.getIdToken() != null) {
       String token = await user.getIdToken().then((value) => value.token);
       logLongString(token);
-      final FirebaseUser currentUser = await _auth.currentUser();
-
-      if(user.uid == currentUser.uid)
+//      final FirebaseUser currentUser = await _auth.currentUser();
+//      if(user.uid == currentUser.uid)
       return token;
 
     }
