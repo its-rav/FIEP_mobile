@@ -1,57 +1,55 @@
-import 'dart:async';
-
 import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/Model/login_model.dart';
+import 'package:scoped_model/scoped_model.dart';
 
+class LoginViewModel extends Model {
+  static LoginViewModel _instance;
 
-class LoginViewModel{
-
-
-  StreamController<String> _textController = new StreamController<String>.broadcast();
-  Sink get textSink => _textController;
-
-
-
-  LoginViewModel(){
+  static LoginViewModel getInstance() {
+    if (_instance == null) {
+      _instance = LoginViewModel();
+    }
+    return _instance;
   }
 
-//  Future<void> changeEvent() async {
-//    String message = await getEventLogin();
-//    textSink.add(message);
-//  }
+  static void destroyInstance() {
+    _instance = null;
+  }
 
-  Future<String> changeEventLogin() async {
-    signOutGoogle();
-    String text;
+  bool isLoading = false;
+  String text;
+
+  LoginViewModel() {}
+
+  void changeEventLogin() async {
+   signOutGoogle();
+    //await Future.delayed(const Duration(milliseconds: 100), (){});
+    isLoading = true;
+    text = null;
+    notifyListeners();
     try {
-      String token = await validateAccount();
-      print("Status code: $token");
+      //String token = await validateAccount();
+      String token = await signInWithGoogle();
       if (token != null) {
         text = "";
-      }
-      else {
+      } else {
         text = "An error has occurred. Please try app later!";
       }
-    } on FetchDataException{
+
+    } on FetchDataException {
       text = "Error internet connection";
-    }
-
-    on BadRequestException{
+    } on BadRequestException {
       text = "Missing request field";
-    }
-
-    on UnauthorisedException{
+    } on UnauthorisedException {
       text = "Error user don't have authorization";
+
+    } finally{
+      isLoading = false;
+      notifyListeners();
+
     }
 
-
-    return text;
-   // text = await signInWithGoogle();
+    // text = await signInWithGoogle();
   }
 
-  Stream<String> get textStream => _textController.stream;
-
-  dispose(){
-    _textController.close();
-  }
 }
