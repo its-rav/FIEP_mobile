@@ -11,11 +11,12 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  final String uri = "https://171.235.181.73:8081/api/Events";
   List data;
 
   Future<String> getData() async {
     var response = await http.get(
-        Uri.encodeFull("https://fiepapi.azurewebsites.net/api/Events"),
+        Uri.encodeFull(uri),
         headers: {"Accept": "application/json"});
 
     this.setState(() {
