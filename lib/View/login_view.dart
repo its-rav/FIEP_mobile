@@ -32,12 +32,12 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
-                margin: const EdgeInsets.only(bottom: 85, top: 35),
+                margin: const EdgeInsets.only(bottom: 50, top: 30),
                 child: Text("FPT Internal Event Platform",
                     style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.orange,
-                        fontWeight: FontWeight.bold)),
+                        fontSize: 20,
+                        color: Colors.black,
+                       )),
               ),
               _welcome(),
               _signInButton(),
@@ -88,29 +88,35 @@ class _LoginPageState extends State<LoginPage> {
           });
   }
 
-  Container _welcome() {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 200),
+  Widget _welcome() {
+    return Expanded(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           GradientText(
             "FPT",
             gradient: LinearGradient(
-              colors: [Colors.purple, Colors.deepOrange, Colors.pink],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.purple, Colors.deepOrange, Colors.red, Colors.pink],
             ),
             style: TextStyle(
-                fontSize: 120,
+              fontFamily: "Shoescenter",
+                letterSpacing: 7,
+                fontSize: 200,
                 fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic),
+                //fontStyle: FontStyle.italic
+              ),
+          ),
+          SizedBox(
+            width: 5,
           ),
           Text("IEP",
               style: TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blueAccent))
+                  color: Colors.orange))
         ],
       ),
     );
