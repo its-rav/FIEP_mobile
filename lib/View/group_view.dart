@@ -26,18 +26,16 @@ class _GroupState extends State<GroupPage> {
         body: Center(
           child: SingleChildScrollView(
               child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
               SizedBox(height: 15.0),
               Stack(children: <Widget>[
-
                 Container(
                   height: 50,
                   child: ButtonBar(),
                 ),
-
                 Positioned(
                   top: MediaQuery.of(context).viewInsets.top,
                   left: 0,
@@ -61,9 +59,9 @@ class _GroupState extends State<GroupPage> {
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   prefixIcon:
-                                  Icon(Icons.search, color: Colors.black),
+                                      Icon(Icons.search, color: Colors.black),
                                   contentPadding:
-                                  EdgeInsets.only(left: 15.0, top: 15.0),
+                                      EdgeInsets.only(left: 15.0, top: 15.0),
                                   hintText: 'Search for events',
                                   hintStyle: TextStyle(color: Colors.grey)),
                             ),
@@ -77,15 +75,10 @@ class _GroupState extends State<GroupPage> {
                         ),
                       ]),
                 ),
-
-
-
               ]),
-
               SizedBox(height: 15.0),
               getGroupUI(),
               getEventUI(),
-
             ],
           )),
         ));
@@ -193,7 +186,8 @@ class _GroupState extends State<GroupPage> {
         });
   }
 
-  FutureBuilder getEventUI() {
+
+FutureBuilder getEventUI() {
     return FutureBuilder<List<EventDTO>>(
       future: list,
       builder: (context, snapshot) {
