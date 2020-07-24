@@ -1,7 +1,11 @@
+import 'dart:convert';
+
+import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:fiepapp/ViewModel/login_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:gradient_text/gradient_text.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_view.dart';
 
 class LoginPage extends StatefulWidget {
@@ -61,8 +65,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
             }
 
-            else if(model.text != null){
-
+            else if(model.text != null && model.text.isNotEmpty){
               return Padding(
                     padding: const EdgeInsets.only(top: 10),
                     child: Text(model.text,
@@ -71,8 +74,6 @@ class _LoginPageState extends State<LoginPage> {
                             color: Colors.red,
                             fontWeight: FontWeight.bold)),
                   );
-              
-
             }
 
               return
@@ -129,14 +130,14 @@ class _LoginPageState extends State<LoginPage> {
             color: Colors.white.withOpacity(0.8),
             focusColor: Colors.white.withOpacity(1.0),
             onPressed: () async {
-              await model.changeEventLogin();
-              if(model.text == "") {
+              AccountDTO dto = await model.changeEventLogin();
+              if(dto != null){
+                SharedPreferences sp = await SharedPreferences.getInstance();
+                sp.setString("USER", jsonEncode(dto.toJson()));
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                    ModalRoute.withName('/'));
+                    MaterialPageRoute(builder: (context) => HomePage(dto)), (Route<dynamic> route) => false);
               }
-
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
             child: Padding(

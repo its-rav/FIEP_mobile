@@ -1,5 +1,6 @@
 import 'package:fiepapp/Model/EventDAO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
+import 'package:fiepapp/View/drawer.dart';
 import 'package:fiepapp/ViewModel/search_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -40,6 +41,7 @@ class _SearchResultPage extends State<SearchResultPage> {
                 ),
               ),
             ),
+            endDrawer: drawerMenu(context),
             body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

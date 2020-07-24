@@ -1,13 +1,17 @@
+import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:fiepapp/Model/EventDAO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:fiepapp/Model/GroupDAO.dart';
 import 'package:fiepapp/Model/GroupDTO.dart';
+import 'package:fiepapp/View/drawer.dart';
 import 'package:fiepapp/View/event_home.dart';
 import 'package:fiepapp/View/group_view.dart';
 import 'package:fiepapp/View/search_view.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
+  AccountDTO dto;
+  HomePage(this.dto);
   @override
   _HomeState createState() {
     // TODO: implement createState
@@ -46,6 +50,7 @@ class _HomeState extends State<HomePage> {
             ),
           ),
         ),
+        endDrawer: drawerMenu(context),
         body: Center(
           child: SingleChildScrollView(
             child: Column(

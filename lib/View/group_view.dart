@@ -100,15 +100,6 @@ class _GroupState extends State<GroupPage> {
     super.dispose();
   }
 
-  Icon getState(int state) {
-    if (state == 1) {
-      return Icon(Icons.check_circle, size: 25);
-    } else if (state == 0) {
-      return Icon(Icons.more, size: 25);
-    }
-
-    return Icon(Icons.cancel, size: 25);
-  }
 
   FutureBuilder getGroupUI() {
     return FutureBuilder<GroupDTO>(
@@ -120,9 +111,12 @@ class _GroupState extends State<GroupPage> {
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image.network(snapshot.data.imageUrl,
-                    //height: 150,
-                    fit: BoxFit.fill),
+                Container(
+                  height: 200,
+                  child: Image.network(snapshot.data.imageUrl,
+                      //height: 150,
+                      fit: BoxFit.fill),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 10),
                   child: Row(
@@ -136,6 +130,9 @@ class _GroupState extends State<GroupPage> {
                           ),
                         ),
                         FlatButton(
+                          onPressed: (){
+                            
+                          },
                           shape: RoundedRectangleBorder(
                               side: BorderSide(
                                 style: BorderStyle.solid,
@@ -147,7 +144,8 @@ class _GroupState extends State<GroupPage> {
                               style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.grey[800])),
+                                  color: Colors.grey[800])
+                          ),
                         )
                       ]),
                 ),
@@ -274,8 +272,7 @@ class _GroupState extends State<GroupPage> {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10),
                                     child: Text(
-                                      (10 + Random().nextInt(900)).toString() +
-                                          " Followers",
+                                      dto.follower,
                                       style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.bold),
@@ -312,10 +309,7 @@ class _GroupState extends State<GroupPage> {
                                         ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 10),
-                                      child: getState(dto.aproveSate),
-                                    ),
+
                                   ]),
                             ),
                           ],

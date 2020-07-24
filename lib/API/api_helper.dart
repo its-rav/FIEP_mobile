@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'api_exception.dart';
 
 class ApiHelper {
@@ -11,8 +12,15 @@ class ApiHelper {
 
   Future<dynamic> get(String url) async {
     var responseJson;
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String token = sp.getString("TOKEN");
     try {
-      final response = await http.get(_baseUrl + url);
+      final response = await http.get(_baseUrl + url, headers: <String, String>{
+        "Content-Type": "application/json; charset=UTF-8",
+        "token" : token
+      },
+
+      );
       print("Ahihi URL: " + _baseUrl+url);
       print("Status code: " + response.statusCode.toString());
       responseJson = returnResponse(response);
@@ -38,7 +46,6 @@ class ApiHelper {
     return responseJson;
   }
 
-
   dynamic returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
@@ -51,6 +58,8 @@ class ApiHelper {
         throw UnauthorisedException(response.body.toString());
       case 403:
         throw UnauthorisedException(response.body.toString());
+      case 511:
+        throw ExpiredException(response.body.toString());
       case 500:
       default:
         throw FetchDataException(

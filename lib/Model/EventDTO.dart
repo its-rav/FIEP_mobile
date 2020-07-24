@@ -1,9 +1,16 @@
 class EventDTO {
-  int _id, _aproveSate;
+  int _id, _aproveSate, _follower;
   String _name, _imageUrl, _location, _timeOccur, _createDate;
 
   EventDTO(this._id, this._aproveSate, this._name, this._imageUrl,
-      this._location, this._timeOccur, this._createDate);
+      this._location, this._timeOccur, this._createDate, this._follower);
+
+  get follower => _follower;
+
+
+  set follower(value) {
+    _follower = value;
+  }
 
   String get timeOccur => _timeOccur;
 
@@ -56,6 +63,7 @@ class EventDTO {
       json['location'] as String,
       json['timeOccur'] as String,
       json['createDate'] as String,
+      json['follower'] as int
     );
   }
 
@@ -68,6 +76,7 @@ class EventDTO {
       json['location'] as String,
       json['timeOccur'] as String,
       json['createDate'] as String,
+        json['follower'] as int
     );
   }
 }

@@ -22,16 +22,6 @@ class GroupDAO {
     return null;
   }
 
-  Future<List<GroupDTO>> get5Group() async{
-    ApiHelper api = new ApiHelper();
-    Map<String, dynamic> json = await api.get("groups");
-    if(json['data'] != null){
-      var eventJson = json['data'] as List;
-      return eventJson.map((e) => GroupDTO.fromJsonAll(e)).toList().getRange(0, 4);
-    }
-    return null;
-  }
-
   Future<List<GroupDTO>> getAllGroup() async{
     ApiHelper api = new ApiHelper();
     Map<String, dynamic> json = await api.get("groups");
