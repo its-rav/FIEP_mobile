@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:fiepapp/View/event_view.dart';
 import 'package:fiepapp/View/search_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,10 @@ import 'package:http/http.dart' as http;
 
 class EventPage extends StatefulWidget {
   @override
-  EventPageState createState() => new EventPageState();
+  _EventPageState createState() => new _EventPageState();
 }
 
-class EventPageState extends State<EventPage> {
+class _EventPageState extends State<EventPage> {
   List data;
 
   Future<String> getData() async {
@@ -88,69 +89,78 @@ class EventPageState extends State<EventPage> {
                     scrollDirection: Axis.vertical,
                     itemCount: data == null ? 0 : data.length,
                     itemBuilder: (BuildContext context, int index) {
-                      return new Padding(
-                        padding: new EdgeInsets.symmetric(
-                            vertical: 5.0, horizontal: 16.0),
-                        child: new Card(
-                          elevation: 2.0,
-                          shape: new RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(16.0),
-                          ),
-                          child: new Column(
-                            children: <Widget>[
-                              new ClipRRect(
-                                child: new Image.network(
-                                    data[index]['imageUrl']
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      EventPostPage()));
+                        },
+                        child: new Padding(
+                          padding: new EdgeInsets.symmetric(
+                              vertical: 5.0, horizontal: 16.0),
+                          child: new Card(
+                            elevation: 2.0,
+                            shape: new RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(16.0),
+                            ),
+                            child: new Column(
+                              children: <Widget>[
+                                new ClipRRect(
+                                  child: new Image.network(
+                                      data[index]['imageUrl']
+                                  ),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: new Radius.circular(16.0),
+                                      topRight: new Radius.circular(16.0)
+                                  ),
                                 ),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: new Radius.circular(16.0),
-                                    topRight: new Radius.circular(16.0)
-                                ),
-                              ),
-                              new Padding(
-                                padding: new EdgeInsets.all(16.0),
-                                child: new Column(
-                                  children: <Widget>[
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        data[index]["eventName"]
-                                            .toString()
-                                            .toUpperCase(),
-                                        style: TextStyle(
-                                            wordSpacing: 5.0,
-                                            fontSize: 23.0,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'san-serif'
+                                new Padding(
+                                  padding: new EdgeInsets.all(16.0),
+                                  child: new Column(
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          data[index]["eventName"]
+                                              .toString()
+                                              .toUpperCase(),
+                                          style: TextStyle(
+                                              wordSpacing: 5.0,
+                                              fontSize: 23.0,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'san-serif'
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    new SizedBox(height: 15.0),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        data[index]['location'],
-                                        style: TextStyle(
-                                          wordSpacing: 3.0,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    ),
-                                    new SizedBox(height: 5.0),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        data[index]['timeOccur'],
-                                        style: TextStyle(
+                                      new SizedBox(height: 15.0),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          data[index]['location'],
+                                          style: TextStyle(
                                             wordSpacing: 3.0,
-                                            fontSize: 15
+                                            fontSize: 15,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      new SizedBox(height: 5.0),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          data[index]['timeOccur'],
+                                          style: TextStyle(
+                                              wordSpacing: 3.0,
+                                              fontSize: 15
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       );
