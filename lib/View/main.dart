@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: "FIEP",
       theme: ThemeData(
         primarySwatch: Colors.orange,
@@ -49,8 +50,8 @@ class MyApp extends StatelessWidget {
         if (snapshot.hasData) {
           String user = snapshot.data.getString("USER");
           if (user != null) {
-            AccountDTO dto = AccountDTO.fromJson(jsonDecode(user));
-            return HomePage(dto);
+            Map<String, dynamic> map = jsonDecode(user);
+            return HomePage(map);
           }
         }
         return LoginPage();

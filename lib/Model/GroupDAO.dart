@@ -8,9 +8,22 @@ class GroupDAO {
     dynamic json = await api.get("groups/$groupID");
     GroupDTO dto = GroupDTO.fromJson(json, groupID);
     print("Group: " + dto.toString());
-
     return dto;
   }
+
+  Future<List<GroupDTO>> getSubcripstionGroup(List<int> ids) async {
+    ApiHelper api = new ApiHelper();
+    List<GroupDTO> listGroup = new List<GroupDTO>();
+    for(int i in ids){
+      dynamic json = await api.get("groups/$i");
+      GroupDTO dto = GroupDTO.fromJson(json, i);
+      print("Group: " + dto.toString());
+      listGroup.add(dto);
+    }
+    return listGroup;
+  }
+
+
 
   Future<List<EventDTO>> getEventofGroup(int groupID) async {
     ApiHelper api = new ApiHelper();
@@ -31,4 +44,31 @@ class GroupDAO {
     }
     return null;
   }
+
+ Future<int> followGroup(String userId, int id) async{
+    ApiHelper api = new ApiHelper();
+    Map<String, dynamic> map = {
+      'groupId' : id,
+      'userId' : userId,
+      'subscriptionType' : 1
+    };
+    Map<String, dynamic> json = await api.post02("groupSubscriptions", map);
+    if(json != null){
+      return 1;
+    }
+    return 0;
+  }
+
+  Future<int> unfollowGroup(String userId, int id) async{
+    ApiHelper api = new ApiHelper();
+    Map<String, dynamic> json = await api.delete("groupSubscriptions/$id/$userId");
+    if(json != null){
+      return 1;
+    }
+    return 0;
+  }
+
+
+
+
 }

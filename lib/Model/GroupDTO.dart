@@ -50,7 +50,7 @@ class GroupDTO{
         json['groupID'] as int,
         json['groupFollower'] as int,
         json['groupName'] as String,
-        json['imageUrl'] as String
+        json['groupImageUrl'] as String
     );
   }
 }

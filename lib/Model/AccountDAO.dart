@@ -1,3 +1,4 @@
+import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/API/api_helper.dart';
 import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:fiepapp/Services/google_signin_service.dart';
@@ -26,8 +27,41 @@ class AccountDAO{
       }
       return null;
     }
+  }
+  
+  Future<List<int>> getEventSubcription(String userId) async {
+    try{
+      ApiHelper api = new ApiHelper();
+      dynamic json = await api.get("users/$userId/eventsubscriptions");
+      if(json != null){
+        List<int> list = json.cast<int>();
+        return list;
+      }
 
+    } on BadRequestException{
+      return null;
+    }
+  }
 
+  Future<List<int>> getGroupSubcription(String userId) async{
+    try{
+      ApiHelper api = new ApiHelper();
+      dynamic json = await api.get("users/$userId/groupsubscriptions");
+      if(json != null){
+        List<int> list = json.cast<int>();
+        return list;
+      }
+    } on BadRequestException{
+      return null;
+    }
+  }
+
+  Future<int> updateAccount(AccountDTO dto) async {
+
+    ApiHelper api = new ApiHelper();
+    var json = await api.patch("users/" + dto.userId, dto.toJsonUpdate());
+    if (json != null) return 1;
+    return 0;
   }
 
 

@@ -8,7 +8,7 @@ class ApiHelper {
 
 
 
-  final String _baseUrl = "https://171.235.181.73:8081/api/";
+  final String _baseUrl = "http://192.168.1.106:8085/api/";
 
   Future<dynamic> get(String url) async {
     var responseJson;
@@ -30,7 +30,7 @@ class ApiHelper {
     return responseJson;
   }
 
-  Future<dynamic> post(String url, Map<String, String> nameValues) async {
+  Future<dynamic> post(String url, Map<String, dynamic> nameValues) async {
     var responseJson;
     try {
       final response = await http.post(
@@ -46,11 +46,72 @@ class ApiHelper {
     return responseJson;
   }
 
+  Future<dynamic> post02(String url, Map<String, dynamic> nameValues) async {
+    var responseJson;
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String token = sp.getString("TOKEN");
+    try {
+      final response = await http.post(
+          _baseUrl + url,
+          headers: <String, String>{
+            "Content-Type": "application/json; charset=UTF-8",
+            'token' : token
+          },
+          body: jsonEncode(nameValues));
+      responseJson = returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
+
+  Future<dynamic> patch(String url, Map<String, dynamic> nameValues) async {
+    var responseJson;
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String token = sp.getString("TOKEN");
+    try {
+      final response = await http.patch(
+          _baseUrl + url,
+          headers: <String, String>{
+            "Content-Type": "application/json; charset=UTF-8",
+            'token' : token
+          },
+          body: jsonEncode(nameValues));
+      responseJson = returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
+
+
+  Future<dynamic> delete(String url) async {
+    var responseJson;
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String token = sp.getString("TOKEN");
+    try {
+      final response = await http.delete(_baseUrl + url, headers: <String, String>{
+        "Content-Type": "application/json; charset=UTF-8",
+        "token" : token
+      },
+      );
+      print("Ahihi URL: " + _baseUrl+url);
+      print("Status code: " + response.statusCode.toString());
+      responseJson = returnResponse(response);
+    } on SocketException {
+      throw FetchDataException('No Internet connection');
+    }
+    return responseJson;
+  }
+
   dynamic returnResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
-        var responseJson = json.decode(response.body);
-        print(responseJson);
+        dynamic responseJson = new Map<String, dynamic>();
+        if(response.body.isNotEmpty){
+          responseJson = json.decode(response.body);
+          print(responseJson);
+        }
         return responseJson;
       case 400:
         throw BadRequestException(response.body.toString());

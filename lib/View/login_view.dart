@@ -132,11 +132,19 @@ class _LoginPageState extends State<LoginPage> {
             onPressed: () async {
               AccountDTO dto = await model.changeEventLogin();
               if(dto != null){
+                List<int> followGroup = await model.getGroupFollowStatus(dto.userId);
+                List<int> followEvent = await model.getEventFollowStatus(dto.userId);
                 SharedPreferences sp = await SharedPreferences.getInstance();
-                sp.setString("USER", jsonEncode(dto.toJson()));
+                Map<String , dynamic> map ={
+                  'account' : dto.toJson(),
+                  'follow group' : followGroup,
+                  'follow event' : followEvent
+                };
+                sp.setString("USER", jsonEncode(map));
+
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage(dto)), (Route<dynamic> route) => false);
+                    MaterialPageRoute(builder: (context) => HomePage(map)), (Route<dynamic> route) => false);
               }
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),

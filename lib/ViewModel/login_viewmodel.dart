@@ -1,3 +1,4 @@
+
 import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/Model/AccountDAO.dart';
 import 'package:fiepapp/Model/AccountDTO.dart';
@@ -45,10 +46,27 @@ class LoginViewModel extends Model {
     finally{
       isLoading = false;
       notifyListeners();
+    }
+  }
 
+
+  Future<List<int>> getEventFollowStatus(String userId) async {
+    try{
+      AccountDAO dao = new AccountDAO();
+      return dao.getEventSubcription(userId);
+    } on BadRequestException{
+      return null;
+    }
+  }
+
+  Future<List<int>> getGroupFollowStatus(String userId) async {
+    try{
+      AccountDAO dao = new AccountDAO();
+      return dao.getGroupSubcription(userId);
+    } on BadRequestException{
+      return null;
     }
 
-    // text = await signInWithGoogle();
   }
 
 }

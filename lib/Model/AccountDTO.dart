@@ -1,12 +1,20 @@
 class AccountDTO{
 
  String _userId, _mail, _name, _imageUrl;
+ int _roleId;
 
 
  String get userId => _userId;
 
 
- AccountDTO(this._userId, this._mail, this._name, this._imageUrl);
+ int get roleId => _roleId;
+
+
+ set roleId(int value) {
+    _roleId = value;
+  }
+
+  AccountDTO(this._userId, this._mail, this._name, this._imageUrl, this._roleId);
 
   set userId(String value) {
     _userId = value;
@@ -17,7 +25,8 @@ class AccountDTO{
         json["userId"] as String,
         json['mail'] as String,
         json['fullName'] as String,
-        json['avatarUrl'] as String
+        json['avatarUrl'] as String,
+        json['roleId'] as int
     );
   }
 
@@ -28,6 +37,16 @@ class AccountDTO{
      "mail": _mail,
      "fullName": _name,
      "avatarUrl": _imageUrl,
+     "roleId" : _roleId
+   };
+ }
+
+ Map<String, dynamic> toJsonUpdate() {
+   return {
+     "mail": _mail,
+     "fullName": _name,
+     "avatarUrl": _imageUrl,
+     "roleId" : _roleId
    };
  }
 
