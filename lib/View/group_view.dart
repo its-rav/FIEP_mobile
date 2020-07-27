@@ -50,48 +50,47 @@ class _GroupState extends State<GroupPage> {
         appBar: AppBar(
           title: Text("Group"),
         ),
-        body: Center(
-          child: SingleChildScrollView(
-            child: Column(
+        body: SingleChildScrollView(
+          child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  SizedBox(height: 40.0),
+                  Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 40.0),
-                    Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Flexible(
-                        child: Material(
-                          elevation: 10.0,
-                          borderRadius: BorderRadius.circular(25.0),
-                          child: TextFormField(
-                              decoration: InputDecoration(
-                                  border: InputBorder.none,
-                                  prefixIcon:
-                                      Icon(Icons.search, color: Colors.black),
-                                  contentPadding:
-                                      EdgeInsets.only(left: 15.0, top: 15.0),
-                                  hintText: 'Search for events',
-                                  hintStyle: TextStyle(color: Colors.grey)),
-                              onFieldSubmitted: (String input) {
-                                if (input.trim().isNotEmpty)
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              SearchResultPage(input)));
-                              }),
-                        ),
+                    Flexible(
+                      child: Material(
+                        elevation: 10.0,
+                        borderRadius: BorderRadius.circular(25.0),
+                        child: TextFormField(
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                prefixIcon:
+                                    Icon(Icons.search, color: Colors.black),
+                                contentPadding:
+                                    EdgeInsets.only(left: 15.0, top: 15.0),
+                                hintText: 'Search for events',
+                                hintStyle: TextStyle(color: Colors.grey)),
+                            onFieldSubmitted: (String input) {
+                              if (input.trim().isNotEmpty)
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            SearchResultPage(input)));
+                            }),
                       ),
-                    ]),
-                SizedBox(height: 15.0),
-                ui()
-              ],
-            ),
-          )),
+                    ),
+                  ]),
+              SizedBox(height: 15.0),
+              ui()
+            ],
+          ),
+        ),
         );
   }
 
@@ -129,6 +128,14 @@ class _GroupState extends State<GroupPage> {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Container();
+          }
+          else if(snapshot.connectionState == ConnectionState.waiting){
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: CircularProgressIndicator(),
+              ),
+            );
           }
           return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -337,6 +344,14 @@ class _GroupState extends State<GroupPage> {
             );
           }
         }
+        else if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
         return Container();
       },
     );
@@ -354,7 +369,7 @@ class _GroupState extends State<GroupPage> {
           return Center(child: CircularProgressIndicator());
         }
         return FlatButton(
-          color: Colors.deepOrange,
+          color: Colors.orange,
           textColor: Colors.white,
           disabledColor: Colors.grey,
           disabledTextColor:

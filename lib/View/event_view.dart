@@ -97,91 +97,120 @@ class _EventPostPageState extends State<EventPostPage> {
                 if (!snapshot.hasData) {
                   return Container();
                 }
-                return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        height: 200,
-                        width: MediaQuery.of(context).size.width,
-                        child: Image.network(snapshot.data.imageUrl,
-                            //height: 150,
-                            fit: BoxFit.fill),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
-                        child: Text(
-                          snapshot.data.name,
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
+                else{
+                  String d1 = DateFormat("dd/MM/yyyy").format(DateTime.now());
+                  String d2 = DateFormat("dd/MM/yyyy").format(snapshot.data.timeOccur);
+                  String status = "End";
+                  Color color = Colors.blue;
+                  if(snapshot.data.timeOccur.isAfter(DateTime.now())){
+                    if(d1 == d2){
+                      status = "Current";
+                      color = Colors.green;
+                    }
+                    else{
+                      status = "Coming";
+                      color = Colors.red;
+                    }
+                  }
+                  return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          height: 200,
+                          width: MediaQuery.of(context).size.width,
+                          child: Image.network(snapshot.data.imageUrl,
+                              //height: 150,
+                              fit: BoxFit.fill),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
+                          child: Text(
+                            snapshot.data.name,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Icon(Icons.access_time),
-                                SizedBox(width: 5,),
-                                Text(DateFormat("dd/MM/yyyy hh:mm a").format(snapshot.data.timeOccur),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ],
-
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, top: 5.0),
+                          child: Material(color: color,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(status, style: TextStyle(color: Colors.white),),
                             ),
-                            ScopedModel(
-                              model: new FollowViewModel(),
-                              child: Column(
+                          ),
+                        ),
+
+
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10, right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
                                 children: <Widget>[
-                                  followButton(map, widget.eventId),
-                                  followEventState(),
+                                  Icon(Icons.access_time),
+                                  SizedBox(width: 5,),
+                                  Text(DateFormat("dd/MM/yyyy hh:mm a").format(snapshot.data.timeOccur),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ],
+
+                              ),
+                              ScopedModel(
+                                model: new FollowViewModel(),
+                                child: Column(
+                                  children: <Widget>[
+                                    followButton(map, widget.eventId),
+                                    followEventState(),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Icon(Icons.location_on),
+                                  Text(" " + snapshot.data.location.toString(),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
                                 ],
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Icon(Icons.location_on),
-                                Text(" " + snapshot.data.location.toString(),
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(snapshot.data.follower.toString() + " followers")
-                          ],
+                              Text(snapshot.data.follower.toString() + " followers")
+                            ],
 
+                          ),
                         ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(left: 10, right: 10),
-                        margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                left: BorderSide(
-                                    color: Colors.orange,
-                                    style: BorderStyle.solid,
-                                    width: 3.0))),
-                        child: Text('Posts',
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'Timesroman',
-                                fontWeight: FontWeight.bold)),
-                      ),
-                    ]);
+                        Container(
+                          padding: EdgeInsets.only(left: 10, right: 10),
+                          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  left: BorderSide(
+                                      color: Colors.orange,
+                                      style: BorderStyle.solid,
+                                      width: 3.0))),
+                          child: Text('Posts',
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontFamily: 'Timesroman',
+                                  fontWeight: FontWeight.bold)),
+                        ),
+                      ]);
+                }
+
               });
         }
         return Padding(
@@ -205,7 +234,7 @@ class _EventPostPageState extends State<EventPostPage> {
           return Center(child: CircularProgressIndicator());
         }
         return FlatButton(
-          color: Colors.deepOrange,
+          color: Colors.orange,
           textColor: Colors.white,
           disabledColor: Colors.grey,
           disabledTextColor:
@@ -248,9 +277,7 @@ class _EventPostPageState extends State<EventPostPage> {
     return FutureBuilder<List<PostDTO>>(
         future: _listData,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Text("List is empty");
-          } else {
+          if(snapshot.hasData) {
             return Column(
               children: <Widget>[
                 for (PostDTO dto in snapshot.data)
@@ -299,6 +326,15 @@ class _EventPostPageState extends State<EventPostPage> {
               ],
             );
           }
+          else if(snapshot.connectionState == ConnectionState.waiting){
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+          return Text("List is empty");
         });
   }
 

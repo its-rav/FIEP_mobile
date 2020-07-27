@@ -327,6 +327,14 @@ class _ProfilePage extends State<ProfilePage> {
           return Text("List is empty");
 
         }
+        else if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
@@ -348,52 +356,80 @@ class _ProfilePage extends State<ProfilePage> {
               future: dao.getSubcripstionEvent(snapshot.data),
               builder: (BuildContext context, AsyncSnapshot<List<EventDTO>> snapshot){
                 if(snapshot.hasData){
-                  return ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: <Widget>[
-                      for(EventDTO dto in snapshot.data)
-                        Container(
-                          width: 220,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    style: BorderStyle.solid,
-                                    width: 1,
-                                    color: Colors.grey),
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
-                            child: InkWell(
-                              onTap: () async {
-                                print("event dto: " + dto.id.toString());
-                                await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventPostPage(dto.id),));
-                                setState(() {
-                                  listSubEvent = _accountDAO.getEventSubcription(widget.dto.userId);
-                                });
-                              },
-                              child: Column(
-                                children: <Widget>[
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10),
-                                    ),
-                                    child: Image.network(dto.imageUrl,
-                                      width: 220.0,
-                                      height: 150.0,
-                                      fit: BoxFit.fill,
-                                    ),
+                  if(snapshot.data != null && snapshot.data.isNotEmpty){
+                    String d1 = DateFormat("dd/MM/yyyy").format(DateTime.now());
+                    List<Widget> listWidget = new List<Widget>();
+                    for(EventDTO dto in snapshot.data){
+                      String d2 = DateFormat("dd/MM/yyyy").format(dto.timeOccur);
+                      String status = "End";
+                      Color color = Colors.blue;
+                      if(dto.timeOccur.isAfter(DateTime.now())){
+                        if(d1 == d2){
+                          status = "Current";
+                          color = Colors.green;
+                        }
+                        else{
+                          status = "Coming";
+                          color = Colors.red;
+                        }
+                      }
+                      listWidget.add(Container(
+                        width: 220,
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  style: BorderStyle.solid,
+                                  width: 1,
+                                  color: Colors.grey),
+                              borderRadius: BorderRadius.all(Radius.circular(10))),
+                          child: InkWell(
+                            onTap: () async {
+                              print("event dto: " + dto.id.toString());
+                              await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventPostPage(dto.id),));
+                              setState(() {
+                                listSubEvent = _accountDAO.getEventSubcription(widget.dto.userId);
+                              });
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10),
                                   ),
-                                  ListTile(
-                                    title: Text(dto.name),
-                                    subtitle: Text(DateFormat("dd/MM/yyyy").format(dto.timeOccur)),
+                                  child: Image.network(dto.imageUrl,
+                                    width: 220.0,
+                                    height: 150.0,
+                                    fit: BoxFit.fill,
                                   ),
-                                ],
-                              ),
+                                ),
+                                ListTile(
+                                  title: Text(dto.name),
+                                  subtitle: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                    Text(DateFormat("dd/MM/yyyy").format(dto.timeOccur)),
+                                    Material(color: color,
+                                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Text(status, style: TextStyle(color: Colors.white),),
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                    ],
-                  );
+                      ),);
+                    }
+                    return ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      children: listWidget,
+                    );
+                  }
                 }
                 return Center(
                   child: Padding(
@@ -406,6 +442,14 @@ class _ProfilePage extends State<ProfilePage> {
           }
           return Text("List is empty");
 
+        }
+        else if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
         return Center(
           child: Padding(

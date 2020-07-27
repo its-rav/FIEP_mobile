@@ -7,6 +7,7 @@ import 'package:fiepapp/View/event_view.dart';
 import 'package:fiepapp/ViewModel/follow_viewmodel.dart';
 import 'package:fiepapp/ViewModel/search_viewmodel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -49,43 +50,41 @@ class _SearchResultPage extends State<SearchResultPage> {
             ),
           ),
           endDrawer: drawerMenu(context),
-          body: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  new Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        _searchBar(),
-                      ]),
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding: EdgeInsets.only(left: 15.0),
-                    child: Container(
-                      padding: EdgeInsets.only(left: 10.0),
-                      decoration: BoxDecoration(
-                          border: Border(
-                              left: BorderSide(
-                                  color: Colors.orange,
-                                  style: BorderStyle.solid,
-                                  width: 3.0))),
-                      child: Text('SEARCH RESULT',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontFamily: 'Timesroman',
-                              fontWeight: FontWeight.bold)),
-                    ),
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                new Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      _searchBar(),
+                    ]),
+                SizedBox(height: 15.0),
+                Padding(
+                  padding: EdgeInsets.only(left: 15.0),
+                  child: Container(
+                    padding: EdgeInsets.only(left: 10.0),
+                    decoration: BoxDecoration(
+                        border: Border(
+                            left: BorderSide(
+                                color: Colors.orange,
+                                style: BorderStyle.solid,
+                                width: 3.0))),
+                    child: Text('SEARCH RESULT',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontFamily: 'Timesroman',
+                            fontWeight: FontWeight.bold)),
                   ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  _searhResult()
-                ],
-              ),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                _searhResult()
+              ],
             ),
           ),
           ),
@@ -137,114 +136,136 @@ class _SearchResultPage extends State<SearchResultPage> {
                   if(map['follow event'] != null){
                     listFollowEvent = map['follow event'].cast<int>();
                   }
-                  return Column(
-                    children: <Widget>[
-                      for (EventDTO dto in model.list)
-                        Container(
-                          height: 370.0,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide(
-                                    style: BorderStyle.solid,
-                                    width: 1,
-                                    color: Colors.grey),
-                                borderRadius: BorderRadius.all(Radius.circular(10))),
-                            elevation: 10.0,
-                            shadowColor: Color(0x802196F3),
-                            child: InkWell(
-                              onTap: () async {
-                                await Navigator.push(context, MaterialPageRoute(builder: (context) => EventPostPage(dto.id),));
-                                await _searchViewModel.getEventResult(value);
-                                SharedPreferences sp = await SharedPreferences.getInstance();
-                                String user = sp.getString("USER");
-                                Map<String, dynamic> map = jsonDecode(user);
-                                setState(() {
-                                  listFollowEvent = new List<int>();
-                                  if(map['follow event'] != null){
-                                    listFollowEvent = map['follow event'].cast<int>();
-                                  }
-                                });
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: <Widget>[
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10),
-                                    ),
-                                    child: Image.network(dto.imageUrl,
-                                        height: 230, width: 250, fit: BoxFit.fill),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            dto.name,
-                                            style: TextStyle(
-                                                fontSize: 20.0,
-                                                fontWeight: FontWeight.bold,
-                                                fontFamily: 'san-serif'),
-                                          ),
-                                        ]),
-                                  ),
-                                  Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 10, right: 10),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Icon(Icons.access_time),
-                                                  Text(" " + dto.timeOccur
-                                                      .toString()
-                                                      .replaceAll("T", " ").substring(0, 16),
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                ],
-
-                                              ),
-                                              followButtonEvent(listFollowEvent, dto.id, map)
-                                            ],
-
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Icon(Icons.location_on),
-                                                  Text(" " + dto.location,
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Text(dto.follower.toString() + " followers")
-                                            ],
-
-                                          ),
-                                        ),
-
-                                      ]),
-                                ],
+                  String d1 = DateFormat("dd/MM/yyyy").format(DateTime.now());
+                  List<Widget> listWidget = new List<Widget>();
+                  for(EventDTO dto in model.list){
+                    String d2 = DateFormat("dd/MM/yyyy").format(dto.timeOccur);
+                    String status = "End";
+                    Color color = Colors.blue;
+                    if(dto.timeOccur.isAfter(DateTime.now())){
+                      if(d1 == d2){
+                        status = "Current";
+                        color = Colors.green;
+                      }
+                      else{
+                        status = "Coming";
+                        color = Colors.red;
+                      }
+                    }
+                    listWidget.add(Container(
+                      height: 400.0,
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                style: BorderStyle.solid,
+                                width: 1,
+                                color: Colors.grey),
+                            borderRadius: BorderRadius.all(Radius.circular(10))),
+                        elevation: 10.0,
+                        shadowColor: Color(0x802196F3),
+                        child: InkWell(
+                          onTap: () async {
+                            await Navigator.push(context, MaterialPageRoute(builder: (context) => EventPostPage(dto.id),));
+                            await _searchViewModel.getEventResult(value);
+                            SharedPreferences sp = await SharedPreferences.getInstance();
+                            String user = sp.getString("USER");
+                            Map<String, dynamic> map = jsonDecode(user);
+                            setState(() {
+                              listFollowEvent = new List<int>();
+                              if(map['follow event'] != null){
+                                listFollowEvent = map['follow event'].cast<int>();
+                              }
+                            });
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                                child: Image.network(dto.imageUrl,
+                                    height: 230, width: 250, fit: BoxFit.fill),
                               ),
-                            ),
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(
+                                        dto.name,
+                                        style: TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'san-serif'),
+                                      ),
+                                      Material(color: color,
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(status, style: TextStyle(color: Colors.white),),
+                                        ),
+                                      )
+
+                                    ]),
+                              ),
+                              Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10, right: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Icon(Icons.access_time),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Text(DateFormat("dd/MM/yyyy hh:mm a").format(dto.timeOccur),
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          followButtonEvent(listFollowEvent, dto.id, map)
+                                        ],
+
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Row(
+                                            children: <Widget>[
+                                              Icon(Icons.location_on),
+                                              Text(" " + dto.location,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(dto.follower.toString() + " followers")
+                                        ],
+                                      ),
+                                    ),
+
+                                  ]),
+                            ],
                           ),
-                        )
-                    ],
+                        ),
+                      ),
+                    ));
+                  }
+                  return Column(
+                    children: listWidget
                   );
                 } else if (model.isLoading) {
                   return Center(
@@ -277,7 +298,7 @@ class _SearchResultPage extends State<SearchResultPage> {
             return Center(child: CircularProgressIndicator());
           }
           return FlatButton(
-            color: Colors.deepOrange,
+            color: Colors.orange,
             textColor: Colors.white,
             disabledColor: Colors.grey,
             disabledTextColor:

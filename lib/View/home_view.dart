@@ -41,74 +41,72 @@ class _HomeState extends State<HomePage> {
         title: Text("Home"),
       ),
       endDrawer: drawerMenu(context),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(height: 15.0),
-              searchBar(),
-              SizedBox(height: 15.0),
-              Padding(
-                padding: EdgeInsets.only(left: 15.0),
-                child: Container(
-                  padding: EdgeInsets.only(left: 10.0),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          left: BorderSide(
-                              color: Colors.orange,
-                              style: BorderStyle.solid,
-                              width: 3.0))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text('INCOMING EVENT',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontFamily: 'Timesroman',
-                              fontWeight: FontWeight.bold)),
-                      IconButton(
-                        icon: Icon(Icons.more_horiz),
-                        color: Colors.black,
-                        iconSize: 30,
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed('/searchResult');
-                        },
-                      )
-                    ],
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(height: 15.0),
+            searchBar(),
+            SizedBox(height: 15.0),
+            Padding(
+              padding: EdgeInsets.only(left: 15.0),
+              child: Container(
+                padding: EdgeInsets.only(left: 10.0),
+                decoration: BoxDecoration(
+                    border: Border(
+                        left: BorderSide(
+                            color: Colors.orange,
+                            style: BorderStyle.solid,
+                            width: 3.0))),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text('INCOMING EVENT',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontFamily: 'Timesroman',
+                            fontWeight: FontWeight.bold)),
+                    IconButton(
+                      icon: Icon(Icons.more_horiz),
+                      color: Colors.black,
+                      iconSize: 30,
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pushNamed('/searchResult');
+                      },
+                    )
+                  ],
                 ),
               ),
-              eventUI(),
-              SizedBox(height: 15.0),
-              Padding(
-                padding: EdgeInsets.only(left: 15.0),
-                child: Container(
-                  padding: EdgeInsets.only(left: 10.0),
-                  decoration: BoxDecoration(
-                      border: Border(
-                          left: BorderSide(
-                              color: Colors.orange,
-                              style: BorderStyle.solid,
-                              width: 3.0))),
-                  child: Row(
-                    children: <Widget>[
-                      Text('UNIVERSITY CLUBS',
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontFamily: 'Timesroman',
-                              fontWeight: FontWeight.bold))
-                    ],
-                  ),
+            ),
+            eventUI(),
+            SizedBox(height: 15.0),
+            Padding(
+              padding: EdgeInsets.only(left: 15.0),
+              child: Container(
+                padding: EdgeInsets.only(left: 10.0),
+                decoration: BoxDecoration(
+                    border: Border(
+                        left: BorderSide(
+                            color: Colors.orange,
+                            style: BorderStyle.solid,
+                            width: 3.0))),
+                child: Row(
+                  children: <Widget>[
+                    Text('UNIVERSITY CLUBS',
+                        style: TextStyle(
+                            fontSize: 20.0,
+                            fontFamily: 'Timesroman',
+                            fontWeight: FontWeight.bold))
+                  ],
                 ),
               ),
-              groupUI()
+            ),
+            groupUI()
 
-            ],
-          ),
+          ],
         ),
       ),
     );

@@ -17,7 +17,7 @@ class EventDAO{
 
   Future<List<EventDTO>> getUpcomingEvent() async{
     ApiHelper api = new ApiHelper();
-    Map<String, dynamic> json = await api.get("events?isupcomming=true");
+    Map<String, dynamic> json = await api.get("events?isupcomming=true&isDesc=false&SortBy=0");
     if(json['data'] != null){
       var eventJson = json['data'] as List;
       return eventJson.map((e) => EventDTO.fromJson(e)).toList();
