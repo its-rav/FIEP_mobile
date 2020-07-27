@@ -6,7 +6,7 @@ class GroupDAO {
   Future<GroupDTO> getGroup(int groupID) async {
     ApiHelper api = new ApiHelper();
     dynamic json = await api.get("groups/$groupID");
-    GroupDTO dto = GroupDTO.fromJson(json, groupID);
+    GroupDTO dto = GroupDTO.fromJson(json);
     print("Group: " + dto.toString());
     return dto;
   }
@@ -16,7 +16,7 @@ class GroupDAO {
     List<GroupDTO> listGroup = new List<GroupDTO>();
     for(int i in ids){
       dynamic json = await api.get("groups/$i");
-      GroupDTO dto = GroupDTO.fromJson(json, i);
+      GroupDTO dto = GroupDTO.fromJson(json);
       print("Group: " + dto.toString());
       listGroup.add(dto);
     }
@@ -30,7 +30,7 @@ class GroupDAO {
     dynamic json = await api.get("groups/$groupID/events");
     if (json['data'] != null) {
       var eventJson = json['data'] as List;
-      return eventJson.map((e) => EventDTO.fromJson(e, groupID)).toList();
+      return eventJson.map((e) => EventDTO.fromJson(e)).toList();
     }
     return null;
   }
@@ -40,7 +40,7 @@ class GroupDAO {
     Map<String, dynamic> json = await api.get("groups");
     if(json['data'] != null){
       var eventJson = json['data'] as List;
-      return eventJson.map((e) => GroupDTO.fromJsonAll(e)).toList();
+      return eventJson.map((e) => GroupDTO.fromJson(e)).toList();
     }
     return null;
   }

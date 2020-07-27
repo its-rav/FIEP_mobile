@@ -19,7 +19,7 @@ Widget drawerMenu(BuildContext context) {
         String user = snapshot.data.getString("USER");
         Map<String, dynamic> map = jsonDecode(user);
         AccountDTO dto = AccountDTO.fromJson(map['account']);
-        Widget list = listItem(map, dto, context);
+        Widget list = listItem(dto, context);
         print(dto.toString());
         if(dto.imageUrl != null) {
           _imageUrl = dto.imageUrl;
@@ -102,7 +102,7 @@ Widget drawerMenu(BuildContext context) {
   );
 }
 
-Widget listItem(Map map, AccountDTO dto, BuildContext context) {
+Widget listItem(AccountDTO dto, BuildContext context) {
  return Column(
       children: <Widget>[
         itemDrawer(
@@ -111,7 +111,7 @@ Widget listItem(Map map, AccountDTO dto, BuildContext context) {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomePage(map)),
+                builder: (context) => HomePage()),
           );
         }),
         itemDrawer(

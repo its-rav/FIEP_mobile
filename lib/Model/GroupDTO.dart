@@ -36,18 +36,18 @@ class GroupDTO{
     return 'GroupDTO{_id: $_id, _follower: $_follower, _name: $_name, _imageUrl: $_imageUrl}';
   }
 
-  factory GroupDTO.fromJson(dynamic json, int groupID){
-    return GroupDTO(
-        groupID,
-        json['groupFollower'] as int,
-        json['groupName'] as String,
-        json['groupImageUrl'] as String
-    );
-  }
 
-  factory GroupDTO.fromJsonAll(dynamic json){
+
+  factory GroupDTO.fromJson(dynamic json){
+    int id;
+    if(json['groupId']!= null){
+      id = json['groupId'] as int;
+    }
+    else {
+      id = json['groupID'] as int;
+    }
     return GroupDTO(
-        json['groupID'] as int,
+        id,
         json['groupFollower'] as int,
         json['groupName'] as String,
         json['groupImageUrl'] as String

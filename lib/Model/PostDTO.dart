@@ -1,5 +1,5 @@
 class PostDTO{
-  int _id;
+  String _id;
   String _postContent, _imageUrl;
 
   PostDTO(this._id, this._postContent, this._imageUrl);
@@ -16,15 +16,17 @@ class PostDTO{
     _postContent = value;
   }
 
-  int get id => _id;
 
-  set id(int value) {
+  String get id => _id;
+
+
+  set id(String value) {
     _id = value;
   }
 
-  factory PostDTO.fromJson(dynamic json, int eventID){
+  factory PostDTO.fromJson(dynamic json){
     return PostDTO(
-        json['postID'] as int,
+        json['postId'] as String,
         json['postContent'] as String,
         json['imageUrl'] as String
     );

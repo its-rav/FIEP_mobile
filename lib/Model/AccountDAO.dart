@@ -64,6 +64,13 @@ class AccountDAO{
     return 0;
   }
 
+  Future<AccountDTO> getAccount(String id) async {
+    ApiHelper api = new ApiHelper();
+    var json = await api.get("users/" + id);
+    if (json != null) return AccountDTO.fromJson(json);
+    return null;
+  }
+
 
 
 }

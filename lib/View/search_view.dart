@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:fiepapp/View/drawer.dart';
+import 'package:fiepapp/View/event_view.dart';
 import 'package:fiepapp/ViewModel/follow_viewmodel.dart';
 import 'package:fiepapp/ViewModel/search_viewmodel.dart';
 import 'package:flutter/material.dart';
@@ -23,23 +24,28 @@ class SearchResultPage extends StatefulWidget {
 
 class _SearchResultPage extends State<SearchResultPage> {
   // for http requests
+  List<int> listFollowEvent = new List<int>();
 
+  SearchViewModel _searchViewModel = new SearchViewModel();
+  String value;
   @override
   void initState() {
     super.initState();
+    if(widget.text != null){
+      value = widget.text;
+    }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel(
-      model: new SearchViewModel(),
+      model: _searchViewModel,
       child: Scaffold(
           appBar: AppBar(
             title: Text(
-              "FIEP",
-              style: TextStyle(
-                color: Colors.white,
-              ),
+              "Search",
             ),
           ),
           endDrawer: drawerMenu(context),
@@ -54,19 +60,7 @@ class _SearchResultPage extends State<SearchResultPage> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        new IconButton(
-                          icon: Icon(Icons.home),
-                          color: Colors.black,
-                          iconSize: 30,
-                          onPressed: () {},
-                        ),
                         _searchBar(),
-                        new IconButton(
-                          icon: Icon(Icons.account_circle),
-                          color: Colors.black,
-                          iconSize: 30,
-                          onPressed: () {},
-                        ),
                       ]),
                   SizedBox(height: 15.0),
                   Padding(
@@ -115,7 +109,10 @@ class _SearchResultPage extends State<SearchResultPage> {
                 hintText: 'Search for events',
                 hintStyle: TextStyle(color: Colors.grey)),
             onFieldSubmitted: (String input) {
-              if (input.trim().isNotEmpty) model.getEventResult(input);
+              if (input.trim().isNotEmpty) {
+                value = input;
+                model.getEventResult(value);
+              }
             },
           );
         }),
@@ -137,7 +134,6 @@ class _SearchResultPage extends State<SearchResultPage> {
                   widget.text = null;
                 }
                 if (model.list != null && model.list.isNotEmpty) {
-                  List<int> listFollowEvent = new List<int>();
                   if(map['follow event'] != null){
                     listFollowEvent = map['follow event'].cast<int>();
                   }
@@ -156,7 +152,19 @@ class _SearchResultPage extends State<SearchResultPage> {
                             elevation: 10.0,
                             shadowColor: Color(0x802196F3),
                             child: InkWell(
-                              onTap: (){},
+                              onTap: () async {
+                                await Navigator.push(context, MaterialPageRoute(builder: (context) => EventPostPage(dto.id),));
+                                await _searchViewModel.getEventResult(value);
+                                SharedPreferences sp = await SharedPreferences.getInstance();
+                                String user = sp.getString("USER");
+                                Map<String, dynamic> map = jsonDecode(user);
+                                setState(() {
+                                  listFollowEvent = new List<int>();
+                                  if(map['follow event'] != null){
+                                    listFollowEvent = map['follow event'].cast<int>();
+                                  }
+                                });
+                              },
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
@@ -264,7 +272,7 @@ class _SearchResultPage extends State<SearchResultPage> {
       model: new FollowViewModel(),
       child: ScopedModelDescendant<FollowViewModel>(
         builder: (BuildContext context, Widget child, FollowViewModel model) {
-          model.getFollowGroupStatus(listFollowEvent, id);
+          model.getFollowEventStatus(listFollowEvent, id);
           if(model.isLoading){
             return Center(child: CircularProgressIndicator());
           }
@@ -275,7 +283,7 @@ class _SearchResultPage extends State<SearchResultPage> {
             disabledTextColor:
             Colors.black,
             child: Text(
-              model.subGroup,
+              model.subEvent,
               style: TextStyle(
                   fontSize: 18.0),
             ),
@@ -284,12 +292,14 @@ class _SearchResultPage extends State<SearchResultPage> {
               if(dto != null){
                 int result = await model.followEvent(dto.userId, id);
                 if(result == 1){
-                  if(model.subGroup == "Following"){
+                  if(model.subEvent == "Following"){
                     listFollowEvent.add(id);
                   } else listFollowEvent.removeWhere((element) => element == id);
                   SharedPreferences sp = await SharedPreferences.getInstance();
                   map['follow event'] = listFollowEvent;
                   sp.setString("USER", jsonEncode(map));
+                  await _searchViewModel.getEventResult(value);
+
                 }
 
               }

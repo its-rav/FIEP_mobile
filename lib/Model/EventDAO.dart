@@ -10,7 +10,17 @@ class EventDAO{
     Map<String, dynamic> json = await api.get("events");
     if(json['data'] != null){
       var eventJson = json['data'] as List;
-      return eventJson.map((e) => EventDTO.fromJsonAll(e)).toList();
+      return eventJson.map((e) => EventDTO.fromJson(e)).toList();
+    }
+    return null;
+  }
+
+  Future<List<EventDTO>> getUpcomingEvent() async{
+    ApiHelper api = new ApiHelper();
+    Map<String, dynamic> json = await api.get("events?isupcomming=true");
+    if(json['data'] != null){
+      var eventJson = json['data'] as List;
+      return eventJson.map((e) => EventDTO.fromJson(e)).toList();
     }
     return null;
   }
@@ -20,7 +30,7 @@ class EventDAO{
     Map<String, dynamic> json = await api.get("events?query=$text");
     if(json['data'] != null){
       var eventJson = json['data'] as List;
-      return eventJson.map((e) => EventDTO.fromJsonAll(e)).toList();
+      return eventJson.map((e) => EventDTO.fromJson(e)).toList();
     }
     return null;
   }
@@ -52,7 +62,7 @@ class EventDAO{
     List<EventDTO> listEvent = new List<EventDTO>();
     for(int i in ids){
       dynamic json = await api.get("events/$i");
-      EventDTO dto = EventDTO.fromJson(json, i);
+      EventDTO dto = EventDTO.fromJson(json);
       print("Event: " + dto.toString());
       listEvent.add(dto);
     }
@@ -61,16 +71,16 @@ class EventDAO{
 
   Future<EventDTO> getEvent(int eventID) async {
     ApiHelper api = new ApiHelper();
-    dynamic json = await api.get("Events/$eventID");
-    return EventDTO.fromJson(json, eventID);
+    dynamic json = await api.get("events/$eventID");
+    return EventDTO.fromJson(json);
   }
 
   Future<List<PostDTO>> getEventofGroup(int eventID) async {
     ApiHelper api = new ApiHelper();
-    dynamic json = await api.get("Posts/$eventID");
+    dynamic json = await api.get("events/$eventID/posts");
     if (json['data'] != null) {
       var eventJson = json['data'] as List;
-      return eventJson.map((e) => PostDTO.fromJson(e, eventID)).toList();
+      return eventJson.map((e) => PostDTO.fromJson(e)).toList();
     }
     return null;
   }

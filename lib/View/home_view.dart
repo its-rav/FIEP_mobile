@@ -1,26 +1,15 @@
-import 'dart:convert';
-
-import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:fiepapp/Model/EventDAO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:fiepapp/Model/GroupDAO.dart';
 import 'package:fiepapp/Model/GroupDTO.dart';
 import 'package:fiepapp/View/drawer.dart';
-import 'package:fiepapp/View/event_home.dart';
+import 'package:fiepapp/View/event_view.dart';
 import 'package:fiepapp/View/group_view.dart';
 import 'package:fiepapp/View/search_view.dart';
-import 'package:fiepapp/ViewModel/follow_viewmodel.dart';
-import 'package:fiepapp/ViewModel/login_viewmodel.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
-  Map<String, dynamic> map;
-
-
-  HomePage(this.map);
-
   @override
   _HomeState createState() {
     // TODO: implement createState
@@ -40,7 +29,7 @@ class _HomeState extends State<HomePage> {
   void initState() {
     super.initState();
     dao = new EventDAO();
-    list = dao.getAllEvent();
+    list = dao.getUpcomingEvent();
     groupDAO = new GroupDAO();
     listGroup = groupDAO.getAllGroup();
   }
@@ -48,6 +37,9 @@ class _HomeState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Home"),
+      ),
       endDrawer: drawerMenu(context),
       body: Center(
         child: SingleChildScrollView(
@@ -123,48 +115,28 @@ class _HomeState extends State<HomePage> {
   }
 
   Widget searchBar(){
-    return new Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          new IconButton(
-            icon: Icon(Icons.home),
-            color: Colors.black,
-            iconSize: 30,
-            onPressed: () {},
-          ),
-          Flexible(
-            child: Material(
-              elevation: 10.0,
-              borderRadius: BorderRadius.circular(25.0),
-              child: TextFormField(
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    prefixIcon:
-                    Icon(Icons.search, color: Colors.black),
-                    contentPadding:
-                    EdgeInsets.only(left: 15.0, top: 15.0),
-                    hintText: 'Search for events',
-                    hintStyle: TextStyle(color: Colors.grey)),
-                onFieldSubmitted: (String input) {
-                  if (input.trim().isNotEmpty)
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                SearchResultPage(input)));
-                },
-              ),
-            ),
-          ),
-          new IconButton(
-            icon: Icon(Icons.account_circle),
-            color: Colors.black,
-            iconSize: 30,
-            onPressed: () {},
-          ),
-        ]);
+    return Material(
+      elevation: 10.0,
+      borderRadius: BorderRadius.circular(20.0),
+      child: TextFormField(
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            prefixIcon:
+            Icon(Icons.search, color: Colors.black),
+            contentPadding:
+            EdgeInsets.only(left: 15.0, top: 15.0),
+            hintText: 'Search for events',
+            hintStyle: TextStyle(color: Colors.grey)),
+        onFieldSubmitted: (String input) {
+          if (input.trim().isNotEmpty)
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        SearchResultPage(input)));
+        },
+      ),
+    );
   }
 
   Widget eventUI(){
@@ -172,7 +144,7 @@ class _HomeState extends State<HomePage> {
         future: list,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            if (snapshot.data != null) {
+            if (snapshot.data != null && snapshot.data.isNotEmpty) {
               return Container(
                 height: 300,
                 child: ListView(
@@ -195,7 +167,7 @@ class _HomeState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            EventPage()));
+                                            EventPostPage(dto.id)));
                               },
                               child: Wrap(
                                 children: <Widget>[
@@ -213,7 +185,7 @@ class _HomeState extends State<HomePage> {
                                   ),
                                   ListTile(
                                     title: Text(dto.name),
-                                    subtitle: Text(dto.timeOccur.replaceAll("T", " ")),
+                                    subtitle: Text(DateFormat("dd/MM/yyyy hh:mm a").format(dto.timeOccur)),
                                   ),
                                 ],
                               ),
@@ -223,6 +195,12 @@ class _HomeState extends State<HomePage> {
                 ),
               );
             }
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("List is empty"),
+              ),
+            );
           }
           return Padding(
             padding: const EdgeInsets.all(10.0),
@@ -237,13 +215,8 @@ class _HomeState extends State<HomePage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             if (snapshot.data != null) {
-              List<int> listFollowGroup = new List<int>();
-              if(widget.map['follow group'] != null){
-                listFollowGroup = widget.map['follow group'].cast<int>();
-              }
-
               return Container(
-                height: 320,
+                height: 280,
                 child: ListView(
                   shrinkWrap: true,
                   scrollDirection: Axis.horizontal,
@@ -276,7 +249,7 @@ class _HomeState extends State<HomePage> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            GroupPage(dtoGroup.id, widget.map)));
+                                            GroupPage(dtoGroup.id)));
                               },
                               child: Wrap(
                                 children: <Widget>[
@@ -290,15 +263,6 @@ class _HomeState extends State<HomePage> {
                                   ),
                                   ListTile(
                                     title: Text(dtoGroup.name),
-                                    subtitle: ScopedModel<FollowViewModel>(
-                                      model: new FollowViewModel(),
-                                      child: Column(
-                                        children: <Widget>[
-                                          followButton(listFollowGroup, dtoGroup.id),
-                                          followGroupState(),
-                                        ],
-                                      ),
-                                    )
                                   ),
                                 ],
                               ),
@@ -316,61 +280,4 @@ class _HomeState extends State<HomePage> {
         });
   }
 
-  Widget followButton(List<int> listFollowGroup, int id){
-    return ScopedModelDescendant<FollowViewModel>(
-      builder: (BuildContext context, Widget child, FollowViewModel model) {
-        model.getFollowGroupStatus(listFollowGroup, id);
-        if(model.isLoading){
-          return Center(child: CircularProgressIndicator());
-        }
-        return FlatButton(
-          color: Colors.deepOrange,
-          textColor: Colors.white,
-          disabledColor: Colors.grey,
-          disabledTextColor:
-          Colors.black,
-          child: Text(
-            model.subGroup,
-            style: TextStyle(
-                fontSize: 18.0),
-          ),
-          onPressed: () async {
-            AccountDTO dto = AccountDTO.fromJson(widget.map['account']);
-            if(dto != null){
-              int result = await model.followGroup(dto.userId, id);
-              if(result == 1){
-                if(model.subGroup == "Following"){
-                  listFollowGroup.add(id);
-                } else listFollowGroup.removeWhere((element) => element == id);
-                SharedPreferences sp = await SharedPreferences.getInstance();
-                widget.map['follow group'] = listFollowGroup;
-                sp.setString("USER", jsonEncode(widget.map));
-                
-              }
-              
-            }
-          },
-          padding:
-          EdgeInsets.only(left: 8.0, right:  8.0),
-          splashColor: Colors.green,
-          shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.all(
-                  Radius.circular(
-                      4))),
-        );
-      },
-    );
-  }
-
-  Widget followGroupState(){
-    return ScopedModelDescendant<FollowViewModel>(
-      builder: (BuildContext context, Widget child, FollowViewModel model) {
-        if(model.text != null && model.text.isNotEmpty){
-        return Center(child: Text(model.text, style: TextStyle(color: Colors.red),));
-        }
-        return Container();
-      },
-    );
-  }
 }

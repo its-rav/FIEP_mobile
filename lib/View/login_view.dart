@@ -144,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => HomePage(map)), (Route<dynamic> route) => false);
+                    MaterialPageRoute(builder: (context) => HomePage()), (Route<dynamic> route) => false);
               }
             },
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),

@@ -6,10 +6,11 @@ import 'package:fiepapp/Model/EventDAO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:fiepapp/Model/GroupDAO.dart';
 import 'package:fiepapp/Model/GroupDTO.dart';
-import 'package:fiepapp/View/event_home.dart';
+import 'package:fiepapp/View/event_view.dart';
 import 'package:fiepapp/View/group_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'UpdatePage.dart';
@@ -31,12 +32,14 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePage extends State<ProfilePage> {
   Image _userImage;
-  String _imagePath;
+  AccountDAO _accountDAO = new AccountDAO();
+  Future<List<int>> listSubGroup;
+  Future<List<int>> listSubEvent;
 
+  String defaultImage = "https://firebasestorage.googleapis.com/v0/b/fiep-e6602.appspot.com/o/users%2Fphoto-1-1590058860284452690018.jpg?alt=media&token=84430471-8893-4d2e-b233-638f702538a8";
 
   @override
   void initState() {
-    String defaultImage = "https://firebasestorage.googleapis.com/v0/b/fiep-e6602.appspot.com/o/users%2Fphoto-1-1590058860284452690018.jpg?alt=media&token=84430471-8893-4d2e-b233-638f702538a8";
     if(widget.dto.imageUrl != null){
       defaultImage = widget.dto.imageUrl;
     }
@@ -46,37 +49,10 @@ class _ProfilePage extends State<ProfilePage> {
       height: 100.0,
       fit: BoxFit.cover,
     );
-  }
+    listSubGroup = _accountDAO.getGroupSubcription(widget.dto.userId);
+    listSubEvent = _accountDAO.getEventSubcription(widget.dto.userId);
 
-  Widget myHeader(IconData icon, String text, Function function) {
-    return FlatButton(
-      onPressed: function,
-      child: Container(
-        height: 60,
-        width: 90,
-        decoration: BoxDecoration(
-            color: Colors.orangeAccent[500],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Column(
-            children: <Widget>[
-              Icon(
-                icon,
-                color: Colors.white,
-              ),
-              SizedBox(
-                height: 3,
-              ),
-              Text(
-                text,
-                style: TextStyle(color: Colors.white),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+
   }
 
   @override
@@ -146,32 +122,7 @@ class _ProfilePage extends State<ProfilePage> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 220),
-                      child: FlatButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          color: Colors.lightBlue,
-                        child: Row(
-                          children: <Widget>[
-                            Text("Edit Profile", style: TextStyle(color: Colors.white),),
-                            SizedBox(width: 5,),
-                            Icon(Icons.edit, color: Colors.white,)
-                          ],
-                        ),
-                        onPressed: () async {
-                          bool result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateAccountPage(widget.dto),));
-                          if(result != null){
-                            if(result){
-                              SharedPreferences sp = await SharedPreferences.getInstance();
-                              String user = sp.getString("USER");
-                              Map<String, dynamic> map = jsonDecode(user);
-                              widget.dto = AccountDTO.fromJson(map['account']);
-                            }
-                          }
-                          },
-                      ),
-                    ),
+                    updateButton(),
                     events(),
                     group()
 
@@ -183,6 +134,58 @@ class _ProfilePage extends State<ProfilePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget updateButton(){
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        if(snapshot.hasData){
+          String user = snapshot.data.getString("USER");
+          AccountDTO dto = AccountDTO.fromJson(jsonDecode(user)['account']);
+          if(dto.userId == widget.dto.userId){
+            return Padding(
+              padding: const EdgeInsets.only(left: 10.0, right: 220),
+              child: FlatButton(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                color: Colors.lightBlue,
+                child: Row(
+                  children: <Widget>[
+                    Text("Edit Profile", style: TextStyle(color: Colors.white),),
+                    SizedBox(width: 5,),
+                    Icon(Icons.edit, color: Colors.white,)
+                  ],
+                ),
+                onPressed: () async {
+                  bool result = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => UpdateAccountPage(widget.dto),));
+                  if(result != null){
+                    if(result){
+                      SharedPreferences sp = await SharedPreferences.getInstance();
+                      setState(() {
+                        String user = sp.getString("USER");
+                        Map<String, dynamic> map = jsonDecode(user);
+                        widget.dto = AccountDTO.fromJson(map['account']);
+                        if(widget.dto.imageUrl != null){
+                          _userImage = Image(
+                            image: NetworkImage(widget.dto.imageUrl),
+                            width: 100.0,
+                            height: 100.0,
+                            fit: BoxFit.cover,
+                          );
+                        }
+                      });
+                    }
+                  }
+                },
+              ),
+            );
+          }
+          return Container();
+        }
+        return Container();
+      },
     );
   }
 
@@ -255,20 +258,15 @@ class _ProfilePage extends State<ProfilePage> {
     );
   }
 
-
-
   Widget groupDetail(){
     return FutureBuilder(
-      future: SharedPreferences.getInstance(),
-      builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+      future: listSubGroup,
+      builder: (BuildContext context, AsyncSnapshot<List<int>> snapshot) {
         if(snapshot.hasData){
-          String user = snapshot.data.getString("USER");
-          Map<String, dynamic> map = jsonDecode(user);
-          if(map['follow group'] != null){
-            List<int> listFollowGroup = map['follow group'].cast<int>();
+          if(snapshot.data != null && snapshot.data.isNotEmpty){
             GroupDAO dao = new GroupDAO();
             return FutureBuilder(
-              future: dao.getSubcripstionGroup(listFollowGroup),
+              future: dao.getSubcripstionGroup(snapshot.data),
               builder: (BuildContext context, AsyncSnapshot<List<GroupDTO>> snapshot){
                 if(snapshot.hasData){
                   return ListView(
@@ -286,8 +284,12 @@ class _ProfilePage extends State<ProfilePage> {
                                     color: Colors.grey),
                                 borderRadius: BorderRadius.all(Radius.circular(10))),
                             child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => GroupPage(dto.id, map),));
+                              onTap: () async {
+                                await Navigator.of(context).push(MaterialPageRoute(builder: (context) => GroupPage(dto.id),));
+                                setState(() {
+                                  listSubGroup = _accountDAO.getGroupSubcription(widget.dto.userId);
+                                });
+
                               },
                               child: Column(
                                 children: <Widget>[
@@ -328,7 +330,7 @@ class _ProfilePage extends State<ProfilePage> {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: CircularProgressIndicator(),
+            child: Text("List is empty"),
           ),
         );
       },
@@ -337,16 +339,13 @@ class _ProfilePage extends State<ProfilePage> {
 
   Widget eventDetail(){
     return FutureBuilder(
-      future: SharedPreferences.getInstance(),
-      builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+      future: listSubEvent,
+      builder: (BuildContext context, AsyncSnapshot<List<int>> snapshot) {
         if(snapshot.hasData){
-          String user = snapshot.data.getString("USER");
-          Map<String, dynamic> map = jsonDecode(user);
-          if(map['follow event'] != null){
-            List<int> listFollowGroup = map['follow event'].cast<int>();
+          if(snapshot.data != null && snapshot.data.isNotEmpty){
             EventDAO dao = new EventDAO();
             return FutureBuilder(
-              future: dao.getSubcripstionEvent(listFollowGroup),
+              future: dao.getSubcripstionEvent(snapshot.data),
               builder: (BuildContext context, AsyncSnapshot<List<EventDTO>> snapshot){
                 if(snapshot.hasData){
                   return ListView(
@@ -364,8 +363,12 @@ class _ProfilePage extends State<ProfilePage> {
                                     color: Colors.grey),
                                 borderRadius: BorderRadius.all(Radius.circular(10))),
                             child: InkWell(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventPage(),));
+                              onTap: () async {
+                                print("event dto: " + dto.id.toString());
+                                await Navigator.of(context).push(MaterialPageRoute(builder: (context) => EventPostPage(dto.id),));
+                                setState(() {
+                                  listSubEvent = _accountDAO.getEventSubcription(widget.dto.userId);
+                                });
                               },
                               child: Column(
                                 children: <Widget>[
@@ -382,7 +385,7 @@ class _ProfilePage extends State<ProfilePage> {
                                   ),
                                   ListTile(
                                     title: Text(dto.name),
-                                    subtitle: Text(dto.timeOccur.replaceAll("T", " ").substring(0, 16)),
+                                    subtitle: Text(DateFormat("dd/MM/yyyy").format(dto.timeOccur)),
                                   ),
                                 ],
                               ),
@@ -407,7 +410,7 @@ class _ProfilePage extends State<ProfilePage> {
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: CircularProgressIndicator(),
+            child: Text("List is empty"),
           ),
         );
       },

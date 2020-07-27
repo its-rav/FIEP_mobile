@@ -193,8 +193,8 @@ class _UpdateAccountState extends State<UpdateAccountPage> {
                 AccountDAO dao = new AccountDAO();
                 int result = await dao.updateAccount(widget.dto);
                 if (result == 1) {
-                  setState(() async {
-                    SharedPreferences sp = await SharedPreferences.getInstance();
+                  SharedPreferences sp = await SharedPreferences.getInstance();
+                   setState((){
                     String user = sp.getString("USER");
                     Map<String, dynamic> map = jsonDecode(user);
                     map['account'] = widget.dto.toJson();

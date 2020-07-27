@@ -47,16 +47,16 @@ class FollowViewModel extends Model{
     notifyListeners();
     try{
       EventDAO dao = new EventDAO();
-      if(subGroup == "Follow"){
+      if(subEvent == "Follow"){
         int result = await dao.followEvent(accountId, id);
         if(result > 0){
-          subGroup = "Following";
+          subEvent = "Following";
           return 1;
         }
       }else{
         int result = await dao.unfollowEvent(accountId, id);
         if(result > 0){
-          subGroup = "Follow";
+          subEvent = "Follow";
           return 1;
         }
       }

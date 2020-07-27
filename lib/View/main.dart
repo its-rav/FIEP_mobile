@@ -50,8 +50,7 @@ class MyApp extends StatelessWidget {
         if (snapshot.hasData) {
           String user = snapshot.data.getString("USER");
           if (user != null) {
-            Map<String, dynamic> map = jsonDecode(user);
-            return HomePage(map);
+            return HomePage();
           }
         }
         return LoginPage();
