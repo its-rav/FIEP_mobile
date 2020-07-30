@@ -1,5 +1,7 @@
+
 import 'package:fiepapp/API/api_exception.dart';
-import 'package:fiepapp/Model/login_model.dart';
+import 'package:fiepapp/Model/AccountDAO.dart';
+import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class LoginViewModel extends Model {
@@ -21,20 +23,15 @@ class LoginViewModel extends Model {
 
   LoginViewModel() {}
 
-  void changeEventLogin() async {
-   signOutGoogle();
-    //await Future.delayed(const Duration(milliseconds: 100), (){});
+  Future<AccountDTO> changeEventLogin() async {
     isLoading = true;
-    text = null;
+    text = "";
     notifyListeners();
     try {
-      //String token = await validateAccount();
-      String token = await signInWithGoogle();
-      if (token != null) {
-        text = "";
-      } else {
-        text = "An error has occurred. Please try app later!";
-      }
+
+      AccountDAO dao = new AccountDAO();
+      AccountDTO dto = await dao.login();
+      return dto;
 
     } on FetchDataException {
       text = "Error internet connection";
@@ -42,14 +39,34 @@ class LoginViewModel extends Model {
       text = "Missing request field";
     } on UnauthorisedException {
       text = "Error user don't have authorization";
-
-    } finally{
-      isLoading = false;
-      notifyListeners();
-
+    } on Exception{
+      text = "An error has ocured. Please try app later!";
     }
 
-    // text = await signInWithGoogle();
+    finally{
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+  Future<List<int>> getEventFollowStatus(String userId) async {
+    try{
+      AccountDAO dao = new AccountDAO();
+      return dao.getEventSubcription(userId);
+    } on BadRequestException{
+      return null;
+    }
+  }
+
+  Future<List<int>> getGroupFollowStatus(String userId) async {
+    try{
+      AccountDAO dao = new AccountDAO();
+      return dao.getGroupSubcription(userId);
+    } on BadRequestException{
+      return null;
+    }
+
   }
 
 }

@@ -1,3 +1,4 @@
+
 import 'package:fiepapp/Model/EventDAO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -42,9 +43,6 @@ class SearchViewModel extends Model{
       notifyListeners();
     }
 
-
   }
-
-
 
 }

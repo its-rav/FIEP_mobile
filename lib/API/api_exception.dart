@@ -25,3 +25,7 @@ class UnauthorisedException extends AppException {
 class InvalidInputException extends AppException {
   InvalidInputException([String message]) : super(message, "Invalid Input: ");
 }
+
+class ExpiredException extends AppException {
+  ExpiredException([String message]) : super(message, "Token Expired: ");
+}

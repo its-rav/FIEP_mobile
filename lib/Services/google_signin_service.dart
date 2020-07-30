@@ -1,12 +1,9 @@
 
-import 'package:fiepapp/API/api_helper.dart';
-import 'package:fiepapp/Services/push_notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 final GoogleSignIn googleSignIn = GoogleSignIn();
-final PushNotificationService _pushNotificationService=PushNotificationService();
 
 Future<String> signInWithGoogle() async {
 
@@ -33,22 +30,6 @@ Future<String> signInWithGoogle() async {
       return token;
 
     }
-  }
-  return null;
-}
-
-Future<String> validateAccount() async{
-  String idToken;
-    await signInWithGoogle().then((value) {
-      idToken = value;
-    });
-    if (idToken != null) {
-      ApiHelper api = new ApiHelper();
-      Map<String, String> map = new Map();
-      map['idToken'] = idToken;
-      map['fcmToken'] = await _pushNotificationService.init();
-      dynamic json  = api.post("auth/login", map).catchError((Object error) {throw Exception();});
-      return json['jwtToken'];
   }
   return null;
 }
