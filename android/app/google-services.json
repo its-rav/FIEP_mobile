@@ -1,0 +1,88 @@
+{
+  "project_info": {
+    "project_number": "577854979934",
+    "firebase_url": "https://fiep-e6602.firebaseio.com",
+    "project_id": "fiep-e6602",
+    "storage_bucket": "fiep-e6602.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577854979934:android:011876c6f0d25e24f559cf",
+        "android_client_info": {
+          "package_name": "com.fiep"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577854979934-dsin5ig8f63m4ls9sn5k9jd1ekqqppj8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "0932e4d83e0f190c10a3f2671082a8b4d3f9809f"
+          }
+        },
+        {
+          "client_id": "577854979934-vtvmjfk802o3q6acmssup9d7u3a7sf4h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "fd0ca9a465e03d08ad20ea8b130e65f5b1500772"
+          }
+        },
+        {
+          "client_id": "577854979934-ksaiva4ar9etosfatd0qhmed2ps4ops1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "5aa242d71a3e6cf573787562fc7d0d436b6e9a01"
+          }
+        },
+        {
+          "client_id": "577854979934-312a05ml87apkk3ol6tgv1h29d545hh2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "426af6fc378ceaa2e71091726f3c886cf8a26375"
+          }
+        },
+        {
+          "client_id": "577854979934-qhjts9pn6mshncc7bj7i1bfg0tmfbehc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "33c462ea9de48d088e721aed2fed0289fe461701"
+          }
+        },
+        {
+          "client_id": "577854979934-98f44bp2729ov231bjd3m29b7hbml02i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fiep",
+            "certificate_hash": "5220a71ec77bc2fabbd592c937032af13cd97fae"
+          }
+        },
+        {
+          "client_id": "577854979934-ehp2v41rro7tf4tnbfmdofd1lr6qlos7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYMPJHSyAa9J2VVZeH47Wzca3N-v_Oojc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "577854979934-ehp2v41rro7tf4tnbfmdofd1lr6qlos7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
