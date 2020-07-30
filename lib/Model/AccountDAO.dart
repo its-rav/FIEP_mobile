@@ -1,6 +1,8 @@
 import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/API/api_helper.dart';
 import 'package:fiepapp/Model/AccountDTO.dart';
+import 'package:fiepapp/Model/EventSubcripstion.dart';
+import 'package:fiepapp/Model/GroupSubcription.dart';
 import 'package:fiepapp/Services/google_signin_service.dart';
 import 'package:fiepapp/Services/push_notification_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,6 +16,7 @@ class AccountDAO{
       ApiHelper api = new ApiHelper();
       PushNotificationService ps = new PushNotificationService();
       String fcmToken = await ps.getFcmToken();
+      print("Fcm Token: " + fcmToken);
       Map<String, String> map = new Map();
       map['idToken'] = token;
       map['fcmToken'] = fcmToken;
@@ -34,7 +37,12 @@ class AccountDAO{
       ApiHelper api = new ApiHelper();
       dynamic json = await api.get("users/$userId/eventsubscriptions");
       if(json != null){
-        List<int> list = json.cast<int>();
+        var eventJson = json as List;
+        List<EventSubcription> listSub = eventJson.map((e) => EventSubcription.fromJson(e)).toList();
+        List<int> list = new List<int>();
+        for(EventSubcription event in listSub){
+          list.add(event.eventId);
+        }
         return list;
       }
     } on BadRequestException{
@@ -47,7 +55,12 @@ class AccountDAO{
       ApiHelper api = new ApiHelper();
       dynamic json = await api.get("users/$userId/groupsubscriptions");
       if(json != null){
-        List<int> list = json.cast<int>();
+        var eventJson = json as List;
+        List<GroupSubcription> listSub = eventJson.map((e) => GroupSubcription.fromJson(e)).toList();
+        List<int> list = new List<int>();
+        for(GroupSubcription group in listSub){
+          list.add(group.groupId);
+        }
         return list;
       }
     } on BadRequestException{

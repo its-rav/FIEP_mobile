@@ -336,12 +336,12 @@ class _EventPostPageState extends State<EventPostPage> {
                         },
                         child: new Column(
                           children: <Widget>[
-                            new ClipRRect(
+                            dto.imageUrl != null ? ClipRRect(
                               child: new Image.network(dto.imageUrl, fit: BoxFit.fill,),
                               borderRadius: BorderRadius.only(
                                   topLeft: new Radius.circular(16.0),
                                   topRight: new Radius.circular(16.0)),
-                            ),
+                            ) : Container(),
                             new Padding(
                               padding: new EdgeInsets.all(16.0),
                               child: new Column(
