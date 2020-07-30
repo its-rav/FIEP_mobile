@@ -33,7 +33,8 @@ class LoginViewModel extends Model {
       AccountDTO dto = await dao.login();
       return dto;
 
-    } on FetchDataException {
+    } on FetchDataException catch (e, stackrac){
+      print(stackrac);
       text = "Error internet connection";
     } on BadRequestException {
       text = "Missing request field";
