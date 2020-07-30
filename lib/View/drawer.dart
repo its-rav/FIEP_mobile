@@ -115,7 +115,7 @@ Widget listItem(AccountDTO dto, BuildContext context) {
           );
         }),
         itemDrawer(
-            'Profile', Icons.edit, (){
+            'Profile', Icons.person, (){
           Navigator.pop(context);
           Navigator.push(
             context,

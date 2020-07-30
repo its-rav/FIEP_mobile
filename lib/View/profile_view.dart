@@ -8,6 +8,7 @@ import 'package:fiepapp/Model/GroupDAO.dart';
 import 'package:fiepapp/Model/GroupDTO.dart';
 import 'package:fiepapp/View/event_view.dart';
 import 'package:fiepapp/View/group_view.dart';
+import 'package:fiepapp/View/search_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -55,9 +56,32 @@ class _ProfilePage extends State<ProfilePage> {
 
   }
 
+  Widget _searchBar(){
+    return  Material(
+      elevation: 10.0,
+      borderRadius: BorderRadius.circular(10.0),
+      shadowColor: Colors.grey,
+      child: TextFormField(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            suffixIcon: Icon(Icons.search, color: Colors.black),
+            contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+            hintText: 'Search',
+            hintStyle: TextStyle(color: Colors.grey),
+          ),
+          onFieldSubmitted: (String input){
+            if(input.trim().isNotEmpty)
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResultPage(input) ));
+          }
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: _searchBar(),
+      ),
       endDrawer: drawerMenu(context),
       body: SingleChildScrollView(
         child: Container(
@@ -85,11 +109,6 @@ class _ProfilePage extends State<ProfilePage> {
                         color: Colors.white,
                         fontSize: 20,
                       ),
-                    ),
-                    Text(
-                      widget.dto.userId,
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w300),
                     ),
                     SizedBox(
                       height: 15,
@@ -363,15 +382,15 @@ class _ProfilePage extends State<ProfilePage> {
                       String d2 = DateFormat("dd/MM/yyyy").format(dto.timeOccur);
                       String status = "End";
                       Color color = Colors.blue;
-                      if(dto.timeOccur.isAfter(DateTime.now())){
+                      if(dto.timeOccur.isBefore(DateTime.now()) || dto.timeOccur.difference(DateTime.now()).inDays == 0){
                         if(d1 == d2){
                           status = "Current";
                           color = Colors.green;
                         }
-                        else{
+                      }
+                      else if(dto.timeOccur.isAfter(DateTime.now())){
                           status = "Coming";
                           color = Colors.red;
-                        }
                       }
                       listWidget.add(Container(
                         width: 220,

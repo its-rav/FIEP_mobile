@@ -4,8 +4,11 @@ import 'package:fiepapp/Accessories/alert.dart';
 import 'package:fiepapp/Model/AccountDAO.dart';
 import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:fiepapp/Model/CommentDTO.dart';
+import 'package:fiepapp/Model/EventDAO.dart';
+import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:fiepapp/Model/PostDAO.dart';
 import 'package:fiepapp/Model/PostDTO.dart';
+import 'package:fiepapp/View/event_view.dart';
 import 'package:fiepapp/View/profile_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -17,7 +20,8 @@ import 'search_view.dart';
 
 class PostPage extends StatefulWidget {
   String postId;
-  PostPage(this.postId);
+  int eventId;
+  PostPage(this.postId, this.eventId);
   @override
   _EventPostPageState createState() => new _EventPostPageState();
 }
@@ -26,15 +30,16 @@ class _EventPostPageState extends State<PostPage> {
 
   String defaultImage = "https://firebasestorage.googleapis.com/v0/b/fiep-e6602.appspot.com/o/users%2Fphoto-1-1590058860284452690018.jpg?alt=media&token=84430471-8893-4d2e-b233-638f702538a8";
 
-  Future<PostDTO> _eventDTO;
+  Future<PostDTO> _postDTO;
   Future<List<CommentDTO>> _listData;
   AccountDAO dao = new  AccountDAO();
   PostDAO postDao = new PostDAO();
+  EventDAO _eventDAO = new EventDAO();
 
   @override
   void initState() {
     super.initState();
-    _eventDTO = postDao.getPost(widget.postId);
+    _postDTO = postDao.getPost(widget.postId);
     _listData = postDao.getComments(widget.postId);
 
   }
@@ -44,41 +49,17 @@ class _EventPostPageState extends State<PostPage> {
     return Scaffold(
         endDrawer: drawerMenu(context),
         appBar: AppBar(
-          title: Text("Post"),
+          title: _searchbar(),
         ),
         body: SingleChildScrollView(
           child: Container(
             child: Column(
               children: <Widget>[
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      child: Material(
-                        elevation: 10.0,
-                        borderRadius: BorderRadius.circular(25.0),
-                        shadowColor: Colors.grey,
-                        child: TextFormField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              prefixIcon: Icon(Icons.search, color: Colors.black),
-                              contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                              hintText: 'Search',
-                              hintStyle: TextStyle(color: Colors.grey),
-                            ),
-                            onFieldSubmitted: (String input){
-                              if(input.trim().isNotEmpty)
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResultPage(input) ));
-                            }
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                SizedBox(height: 10.0,),
+                Center(child: Text("Post Page", style: TextStyle(color: Colors.orange, fontSize: 23, fontWeight: FontWeight.bold),)),
                 SizedBox(height: 10.0),
-                _eventUI(),
+                event(),
+                _postUI(),
                 commentBar(),
                 _commentUI(),
               ],
@@ -87,15 +68,34 @@ class _EventPostPageState extends State<PostPage> {
         ));
   }
 
-  FutureBuilder _eventUI() {
+  Widget _searchbar(){
+    return Material(
+      elevation: 10.0,
+      borderRadius: BorderRadius.circular(10.0),
+      shadowColor: Colors.grey,
+      child: TextFormField(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            suffixIcon: Icon(Icons.search, color: Colors.black),
+            contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+            hintText: 'Search',
+            hintStyle: TextStyle(color: Colors.grey),
+          ),
+          onFieldSubmitted: (String input){
+            if(input.trim().isNotEmpty)
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResultPage(input) ));
+          }
+      ),
+    );
+  }
+
+  FutureBuilder _postUI() {
     return FutureBuilder<SharedPreferences>(
         future: SharedPreferences.getInstance(),
         builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
           if(snapshot.hasData){
-            String user = snapshot.data.getString("USER");
-            Map<String, dynamic> map = jsonDecode(user);
             return FutureBuilder<PostDTO>(
-                future: _eventDTO,
+                future: _postDTO,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Container();
@@ -103,6 +103,10 @@ class _EventPostPageState extends State<PostPage> {
                   return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(DateFormat("dd/MM/yyyy hh:mm a").format(snapshot.data.createDate)),
+                        ),
                         Container(
                           height: 200,
                           width: MediaQuery.of(context).size.width,
@@ -121,19 +125,28 @@ class _EventPostPageState extends State<PostPage> {
                           ),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 10, right: 10),
-                          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.symmetric(vertical: 10),
                           decoration: BoxDecoration(
                               border: Border(
-                                  left: BorderSide(
-                                      color: Colors.orange,
-                                      style: BorderStyle.solid,
-                                      width: 3.0))),
-                          child: Text('Comments',
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  fontFamily: 'Timesroman',
-                                  fontWeight: FontWeight.bold)),
+                                top: BorderSide(
+                                    color: Colors.grey,
+                                    style: BorderStyle.solid,
+                                    width: 2.0
+                                )
+                              )),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(Icons.chat_bubble_outline, color: Colors.grey,),
+                              SizedBox(width: 10,),
+                              Text('Comment',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold, color: Colors.grey)),
+                            ]
+                          ),
                         ),
                       ]);
                 });
@@ -145,57 +158,103 @@ class _EventPostPageState extends State<PostPage> {
         }
     );
   }
+
+  Widget event(){
+    return FutureBuilder<EventDTO>(
+      future: _eventDAO.getEvent(widget.eventId),
+      builder: (BuildContext context, AsyncSnapshot<EventDTO> snapshot) {
+        if(snapshot.hasData){
+          return FlatButton(
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => EventPostPage(widget.eventId) ));
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 2.0, color: Colors.grey),
+                        shape: BoxShape.circle),
+                    child: ClipOval(
+                      child: Image(
+                        image: NetworkImage(snapshot.data.imageUrl),
+                        height: 40,
+                        width: 40,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 10,),
+                  Flexible(child: Text(snapshot.data.name, style: TextStyle(color: Colors.blue, fontSize: 23),))
+                ],
+              ),
+          );
+        }
+        else if(snapshot.connectionState == ConnectionState.waiting){
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        return Center(
+          child: Container()
+        );
+
+      },
+    );
+  }
   
   Widget commentBar(){
     GlobalKey<FormState> key = new GlobalKey();
-    return Material(
-      borderRadius: BorderRadius.circular(25.0),
-      shadowColor: Colors.grey,
-      child: Form(
-        key: key,
-        child: Row(
-          children: <Widget>[
-            Flexible(
-              child: TextFormField(
-                maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                    hintText: 'Add comment',
-                    hintStyle: TextStyle(color: Colors.grey),
-                  ),
-                  onSaved: (String input) async {
-                    if(input.trim().isNotEmpty){
-                      alertNoti(context, "Please wait", CircularProgressIndicator());
-                      SharedPreferences sp = await SharedPreferences.getInstance();
-                      String user = sp.getString("USER");
-                      if(user != null){
-                        AccountDTO acc = AccountDTO.fromJson(jsonDecode(user)['account']);
-                        PostDAO dao = new PostDAO();
-                        CommentDTO dto = new CommentDTO("0", acc.userId, widget.postId, input, DateTime.now());
-                        int result = await dao.addComment(dto);
-                        if(result > 0){
-                          setState(() {
-                            _listData = postDao.getComments(widget.postId);
-                          });
+    return Padding(
+      padding: const EdgeInsets.only(left: 10.0),
+      child: Material(
+        borderRadius: BorderRadius.circular(25.0),
+        shadowColor: Colors.grey,
+        child: Form(
+          key: key,
+          child: Row(
+            children: <Widget>[
+              Flexible(
+                child: TextFormField(
+                  maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+                      hintText: 'Add comment',
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                    onSaved: (String input) async {
+                      if(input.trim().isNotEmpty){
+                        alertNoti(context, "Please wait", CircularProgressIndicator());
+                        SharedPreferences sp = await SharedPreferences.getInstance();
+                        String user = sp.getString("USER");
+                        if(user != null){
+                          AccountDTO acc = AccountDTO.fromJson(jsonDecode(user)['account']);
+                          PostDAO dao = new PostDAO();
+                          CommentDTO dto = new CommentDTO("0", acc.userId, widget.postId, input, DateTime.now());
+                          int result = await dao.addComment(dto);
+                          if(result > 0){
+                            setState(() {
+                              _listData = postDao.getComments(widget.postId);
+                            });
+                          }
+                          Navigator.of(context, rootNavigator: true).pop();
                         }
-                        Navigator.of(context, rootNavigator: true).pop();
                       }
                     }
-                  }
+                ),
               ),
-            ),
-            IconButton(
-              icon: Icon(Icons.send),
-              onPressed: (){
-                if(key.currentState.validate()){
-                  key.currentState.save();
-                }
-              },
-            )
-          ],
+              IconButton(
+                icon: Icon(Icons.send, color: Colors.blue,),
+                onPressed: (){
+                  if(key.currentState.validate()){
+                    key.currentState.save();
+                  }
+                },
+              )
+            ],
 
+          ),
         ),
       ),
     );
@@ -222,8 +281,9 @@ class _EventPostPageState extends State<PostPage> {
                         String now = DateFormat("dd/MM/yyyy").format(DateTime.now());
                         String cmtDate = DateFormat("dd/MM/yyyy").format(dto.createDate);
                         if(now == cmtDate){
-                          cmtDate = DateFormat("hh:mm a").format(dto.createDate);
+                          cmtDate = "Today";
                         }
+                        String cmtTime = DateFormat("hh:mm a").format(dto.createDate);
                         String image = defaultImage;
                         if(snapshot.data.imageUrl != null){
                           image = snapshot.data.imageUrl;
@@ -254,8 +314,16 @@ class _EventPostPageState extends State<PostPage> {
                                         },
                                         child: Text(owner.name)),
                                     subtitle: Text(dto.content),
-                                    trailing: Text(cmtDate),
+                                    trailing: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(cmtDate),
+                                        SizedBox(height: 5,),
+                                        Text(cmtTime)
+                                      ],
+                                    ),
                                   ),
+
                                   secondaryActions: <Widget>[
                                 IconSlideAction(
                                 caption: 'Delete',
@@ -291,7 +359,14 @@ class _EventPostPageState extends State<PostPage> {
                                   },
                                     child: Text(owner.name)),
                                 subtitle: Text(dto.content),
-                                trailing: Text(cmtDate),
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Text(cmtDate),
+                                      SizedBox(height: 5,),
+                                      Text(cmtTime)
+                                    ],
+                                    ),
                               );
                             }
                             return Container();

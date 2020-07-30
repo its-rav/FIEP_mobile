@@ -48,7 +48,7 @@ class _GroupState extends State<GroupPage> {
     return Scaffold(
       endDrawer: drawerMenu(context),
         appBar: AppBar(
-          title: Text("Group"),
+          title: _searchBar(),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -56,42 +56,38 @@ class _GroupState extends State<GroupPage> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  SizedBox(height: 40.0),
-                  Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      child: Material(
-                        elevation: 10.0,
-                        borderRadius: BorderRadius.circular(25.0),
-                        child: TextFormField(
-                            decoration: InputDecoration(
-                                border: InputBorder.none,
-                                prefixIcon:
-                                    Icon(Icons.search, color: Colors.black),
-                                contentPadding:
-                                    EdgeInsets.only(left: 15.0, top: 15.0),
-                                hintText: 'Search for events',
-                                hintStyle: TextStyle(color: Colors.grey)),
-                            onFieldSubmitted: (String input) {
-                              if (input.trim().isNotEmpty)
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            SearchResultPage(input)));
-                            }),
-                      ),
-                    ),
-                  ]),
+                  SizedBox(height: 15.0),
+                  Center(child: Text("Group Page", style: TextStyle(color: Colors.orange, fontSize: 23, fontWeight: FontWeight.bold),)),
               SizedBox(height: 15.0),
               ui()
             ],
           ),
         ),
         );
+  }
+
+  Widget _searchBar(){
+    return Material(
+      elevation: 10.0,
+      borderRadius: BorderRadius.circular(10.0),
+      child: TextFormField(
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              suffixIcon:
+              Icon(Icons.search, color: Colors.black),
+              contentPadding:
+              EdgeInsets.only(left: 15.0, top: 15.0),
+              hintText: 'Search for events',
+              hintStyle: TextStyle(color: Colors.grey)),
+          onFieldSubmitted: (String input) {
+            if (input.trim().isNotEmpty)
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          SearchResultPage(input)));
+          }),
+    );
   }
 
   @override
@@ -171,15 +167,21 @@ class _GroupState extends State<GroupPage> {
                       ]),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: Text(
-                    snapshot.data.follower.toString() + " Followers",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        snapshot.data.follower.toString() + " Followers",
+                        style: TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                      Icon(Icons.chat)
+                    ],
                   ),
                 ),
+
                 Container(
                   padding: EdgeInsets.only(left: 10, right: 10),
                   margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
@@ -211,15 +213,15 @@ class _GroupState extends State<GroupPage> {
               String d2 = DateFormat("dd/MM/yyyy").format(dto.timeOccur);
               String status = "End";
               Color color = Colors.blue;
-              if(dto.timeOccur.isAfter(DateTime.now())){
+              if(dto.timeOccur.isBefore(DateTime.now()) || dto.timeOccur.difference(DateTime.now()).inDays == 0){
                 if(d1 == d2){
                   status = "Current";
                   color = Colors.green;
                 }
-                else{
+              }
+              else if(dto.timeOccur.isAfter(DateTime.now())){
                   status = "Coming";
                   color = Colors.red;
-                }
               }
               listWidget.add(Container(
                 decoration: BoxDecoration(

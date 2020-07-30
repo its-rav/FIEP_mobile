@@ -1,10 +1,21 @@
+import 'package:fiepapp/Model/GroupDTO.dart';
+
 class EventDTO {
   int _id, _aproveSate, _follower;
   String _name, _imageUrl, _location, _createDate;
   DateTime _timeOccur;
+  GroupDTO _group;
+
+
+  GroupDTO get group => _group;
+
+
+  set group(GroupDTO value) {
+    _group = value;
+  }
 
   EventDTO(this._id, this._aproveSate, this._name, this._imageUrl,
-      this._location, this._timeOccur, this._createDate, this._follower);
+      this._location, this._timeOccur, this._createDate, this._follower, this._group);
 
   get follower => _follower;
 
@@ -68,11 +79,15 @@ class EventDTO {
 
   factory EventDTO.fromJson(dynamic json) {
     int id;
+    GroupDTO dto;
     if(json['eventId']!= null){
       id = json['eventId'] as int;
     }
     else {
       id = json['eventID'] as int;
+    }
+    if(json['group'] != null){
+      dto = GroupDTO.fromJson(json['group']);
     }
     return EventDTO(
       id,
@@ -82,7 +97,8 @@ class EventDTO {
       json['location'] as String,
       DateTime.parse(json['timeOccur']),
       json['createDate'] as String,
-        json['follower'] as int
+        json['follower'] as int,
+      dto
     );
   }
 

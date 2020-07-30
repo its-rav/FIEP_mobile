@@ -1,8 +1,17 @@
 class PostDTO{
   String _id;
   String _postContent, _imageUrl;
+  DateTime _createDate;
 
-  PostDTO(this._id, this._postContent, this._imageUrl);
+  PostDTO(this._id, this._postContent, this._imageUrl, this._createDate);
+
+
+  DateTime get createDate => _createDate;
+
+
+  set createDate(DateTime value) {
+    _createDate = value;
+  }
 
   get imageUrl => _imageUrl;
 
@@ -28,7 +37,8 @@ class PostDTO{
     return PostDTO(
         json['postId'] as String,
         json['postContent'] as String,
-        json['imageUrl'] as String
+        json['imageUrl'] as String,
+      DateTime.parse(json['createDate'])
     );
   }
 }

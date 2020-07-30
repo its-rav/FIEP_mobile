@@ -1,38 +1,83 @@
+import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/API/api_helper.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
+import 'package:fiepapp/Model/EventWithPage.dart';
 
 import 'PostDTO.dart';
 
 class EventDAO{
 
-  Future<List<EventDTO>> getAllEvent() async{
-    ApiHelper api = new ApiHelper();
-    Map<String, dynamic> json = await api.get("events");
-    if(json['data'] != null){
-      var eventJson = json['data'] as List;
-      return eventJson.map((e) => EventDTO.fromJson(e)).toList();
-    }
-    return null;
-  }
+
 
   Future<List<EventDTO>> getUpcomingEvent() async{
     ApiHelper api = new ApiHelper();
-    Map<String, dynamic> json = await api.get("events?isupcomming=true&isDesc=false&SortBy=0");
-    if(json['data'] != null){
-      var eventJson = json['data'] as List;
-      return eventJson.map((e) => EventDTO.fromJson(e)).toList();
+    try{
+      Map<String, dynamic> json = await api.get("events?isupcomming=true&pagesize=5&isdesc=false&sortby=0");
+      if(json['data'] != null){
+        var eventJson = json['data'] as List;
+        return eventJson.map((e) => EventDTO.fromJson(e)).toList();
+      }
+      return null;
+    } on BadRequestException{
+      return new List<EventDTO>();
     }
-    return null;
+
+  }
+
+  Future<List<EventDTO>> getPopulatEvent() async{
+    ApiHelper api = new ApiHelper();
+    try{
+      Map<String, dynamic> json = await api.get("events?isupcomming=true&pagesize=5&isdesc=true&sortby=1");
+      if(json['data'] != null){
+        var eventJson = json['data'] as List;
+        return eventJson.map((e) => EventDTO.fromJson(e)).toList();
+      }
+      return null;
+    } on BadRequestException{
+      return new List<EventDTO>();
+    }
+
   }
 
   Future<List<EventDTO>> searchEvent(String text) async{
     ApiHelper api = new ApiHelper();
-    Map<String, dynamic> json = await api.get("events?query=$text");
-    if(json['data'] != null){
-      var eventJson = json['data'] as List;
-      return eventJson.map((e) => EventDTO.fromJson(e)).toList();
+    try{
+      Map<String, dynamic> json = await api.get("events?query=$text");
+      if(json['data'] != null){
+        var eventJson = json['data'] as List;
+        return eventJson.map((e) => EventDTO.fromJson(e)).toList();
+      }
+      return null;
+
+    } on BadRequestException{
+      return new List<EventDTO>();
     }
-    return null;
+  }
+
+  Future<EventWithPage> getEventBy(int type, bool isDecs) async{
+    ApiHelper api = new ApiHelper();
+    try{
+      Map<String, dynamic> json = await api.get("events?pagesize=5&isDesc=$isDecs&sortby=$type");
+      if(json != null){
+        return EventWithPage.fromJson(json);
+      }
+      return null;
+    } on BadRequestException{
+      return new EventWithPage(null, 0, 0);
+    }
+  }
+
+  Future<EventWithPage> addEventBy(int type, int page, bool isDecs) async{
+    ApiHelper api = new ApiHelper();
+    try{
+      Map<String, dynamic> json = await api.get("events?pagesize=5&pagenumber=$page&isDesc=$isDecs&sortby=$type");
+      if(json != null){
+        return EventWithPage.fromJson(json);
+      }
+      return null;
+    } on BadRequestException{
+      return new EventWithPage(null, 0, 0);
+    }
   }
 
   Future<int> followEvent(String userId, int id) async{

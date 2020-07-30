@@ -45,9 +45,7 @@ class _SearchResultPage extends State<SearchResultPage> {
       model: _searchViewModel,
       child: Scaffold(
           appBar: AppBar(
-            title: Text(
-              "Search",
-            ),
+            title: _searchBar()
           ),
           endDrawer: drawerMenu(context),
           body: SingleChildScrollView(
@@ -55,13 +53,8 @@ class _SearchResultPage extends State<SearchResultPage> {
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                new Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      _searchBar(),
-                    ]),
+                SizedBox(height: 15.0),
+                Center(child: Text("Search Page", style: TextStyle(color: Colors.orange, fontSize: 23, fontWeight: FontWeight.bold),)),
                 SizedBox(height: 15.0),
                 Padding(
                   padding: EdgeInsets.only(left: 15.0),
@@ -93,29 +86,27 @@ class _SearchResultPage extends State<SearchResultPage> {
   }
 
   Widget _searchBar() {
-    return Flexible(
-      child: Material(
-        elevation: 10.0,
-        borderRadius: BorderRadius.circular(25.0),
-        child: ScopedModelDescendant<SearchViewModel>(builder:
-            (BuildContext context, Widget child, SearchViewModel model) {
-          return TextFormField(
-            initialValue: widget.text,
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                prefixIcon: Icon(Icons.search, color: Colors.black),
-                contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                hintText: 'Search for events',
-                hintStyle: TextStyle(color: Colors.grey)),
-            onFieldSubmitted: (String input) {
-              if (input.trim().isNotEmpty) {
-                value = input;
-                model.getEventResult(value);
-              }
-            },
-          );
-        }),
-      ),
+    return Material(
+      elevation: 10.0,
+      borderRadius: BorderRadius.circular(10.0),
+      child: ScopedModelDescendant<SearchViewModel>(builder:
+          (BuildContext context, Widget child, SearchViewModel model) {
+        return TextFormField(
+          initialValue: widget.text,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              suffixIcon: Icon(Icons.search, color: Colors.black),
+              contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+              hintText: 'Search for events',
+              hintStyle: TextStyle(color: Colors.grey)),
+          onFieldSubmitted: (String input) {
+            if (input.trim().isNotEmpty) {
+              value = input;
+              model.getEventResult(value);
+            }
+          },
+        );
+      }),
     );
   }
 
@@ -142,15 +133,17 @@ class _SearchResultPage extends State<SearchResultPage> {
                     String d2 = DateFormat("dd/MM/yyyy").format(dto.timeOccur);
                     String status = "End";
                     Color color = Colors.blue;
-                    if(dto.timeOccur.isAfter(DateTime.now())){
+                    bool canFollow = false;
+                    if(dto.timeOccur.isBefore(DateTime.now()) || dto.timeOccur.difference(DateTime.now()).inDays == 0){
                       if(d1 == d2){
                         status = "Current";
                         color = Colors.green;
                       }
-                      else{
+                    }
+                    else if(dto.timeOccur.isAfter(DateTime.now())){
+                      canFollow = true;
                         status = "Coming";
                         color = Colors.red;
-                      }
                     }
                     listWidget.add(Container(
                       height: 400.0,
@@ -190,26 +183,13 @@ class _SearchResultPage extends State<SearchResultPage> {
                               ),
                               Padding(
                                 padding: const EdgeInsets.all(10),
-                                child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        dto.name,
-                                        style: TextStyle(
-                                            fontSize: 20.0,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'san-serif'),
-                                      ),
-                                      Material(color: color,
-                                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: Text(status, style: TextStyle(color: Colors.white),),
-                                        ),
-                                      )
-
-                                    ]),
+                                child: Text(
+                                  dto.name,
+                                  style: TextStyle(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'san-serif'),
+                                ),
                               ),
                               Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,7 +212,13 @@ class _SearchResultPage extends State<SearchResultPage> {
                                               ),
                                             ],
                                           ),
-                                          followButtonEvent(listFollowEvent, dto.id, map)
+                                          Material(color: color,
+                                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(5.0),
+                                              child: Text(status, style: TextStyle(color: Colors.white),),
+                                            ),
+                                          ),
                                         ],
 
                                       ),
@@ -256,6 +242,7 @@ class _SearchResultPage extends State<SearchResultPage> {
                                         ],
                                       ),
                                     ),
+                                    canFollow ? Center(child: followButtonEvent(listFollowEvent, dto.id, map)) : Container()
 
                                   ]),
                             ],
@@ -277,7 +264,7 @@ class _SearchResultPage extends State<SearchResultPage> {
                 } else if (model.error) {
                   return Text("An Error has occured!");
                 }
-                return Text("Nothing found here");
+                return Center(child: Text("Nothing found here"));
               });
         }
         return Padding(
@@ -322,7 +309,6 @@ class _SearchResultPage extends State<SearchResultPage> {
                   await _searchViewModel.getEventResult(value);
 
                 }
-
               }
             },
             padding:

@@ -37,7 +37,6 @@ class AccountDAO{
         List<int> list = json.cast<int>();
         return list;
       }
-
     } on BadRequestException{
       return null;
     }

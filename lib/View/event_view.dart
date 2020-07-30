@@ -4,8 +4,11 @@ import 'dart:convert';
 import 'package:fiepapp/Model/AccountDTO.dart';
 import 'package:fiepapp/Model/EventDAO.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
+import 'package:fiepapp/Model/GroupDAO.dart';
+import 'package:fiepapp/Model/GroupDTO.dart';
 import 'package:fiepapp/Model/PostDTO.dart';
 import 'package:fiepapp/View/drawer.dart';
+import 'package:fiepapp/View/group_view.dart';
 import 'package:fiepapp/View/post_view.dart';
 import 'package:fiepapp/ViewModel/follow_viewmodel.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +31,7 @@ class _EventPostPageState extends State<EventPostPage> {
   EventDAO _eventDAO;
   Future<EventDTO> _eventDTO;
   Future<List<PostDTO>> _listData;
+  GroupDAO _groupDAO;
 
   @override
   void initState() {
@@ -42,39 +46,16 @@ class _EventPostPageState extends State<EventPostPage> {
     return Scaffold(
         endDrawer: drawerMenu(context),
         appBar: AppBar(
-          title: Text("Event"),
+          title: _searchBar(),
         ),
         body: SingleChildScrollView(
           child: Container(
             child: Column(
               children: <Widget>[
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Flexible(
-                      child: Material(
-                        elevation: 10.0,
-                        borderRadius: BorderRadius.circular(25.0),
-                        shadowColor: Colors.grey,
-                        child: TextFormField(
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              prefixIcon: Icon(Icons.search, color: Colors.black),
-                              contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
-                              hintText: 'Search',
-                              hintStyle: TextStyle(color: Colors.grey),
-                            ),
-                            onFieldSubmitted: (String input){
-                              if(input.trim().isNotEmpty)
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResultPage(input) ));
-                            }
-                        ),
-                      ),
-                    ),
-                  ],
+                SizedBox(
+                  height: 15.0,
                 ),
+                Center(child: Text("Event Page", style: TextStyle(color: Colors.orange, fontSize: 23, fontWeight: FontWeight.bold),)),
                 SizedBox(height: 10.0),
                 _eventUI(),
                 _eventPostUI(),
@@ -82,6 +63,27 @@ class _EventPostPageState extends State<EventPostPage> {
             ),
           ),
         ));
+  }
+
+  Widget _searchBar(){
+    return Material(
+      elevation: 10.0,
+      borderRadius: BorderRadius.circular(10.0),
+      shadowColor: Colors.grey,
+      child: TextFormField(
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            suffixIcon: Icon(Icons.search, color: Colors.black),
+            contentPadding: EdgeInsets.only(left: 15.0, top: 15.0),
+            hintText: 'Search fo events',
+            hintStyle: TextStyle(color: Colors.grey),
+          ),
+          onFieldSubmitted: (String input){
+            if(input.trim().isNotEmpty)
+              Navigator.push(context, MaterialPageRoute(builder: (context) => SearchResultPage(input) ));
+          }
+      ),
+    );
   }
 
   FutureBuilder _eventUI() {
@@ -102,15 +104,18 @@ class _EventPostPageState extends State<EventPostPage> {
                   String d2 = DateFormat("dd/MM/yyyy").format(snapshot.data.timeOccur);
                   String status = "End";
                   Color color = Colors.blue;
-                  if(snapshot.data.timeOccur.isAfter(DateTime.now())){
+                  bool isFollow = false;
+                  if(snapshot.data.timeOccur.isBefore(DateTime.now()) || snapshot.data.timeOccur.difference(DateTime.now()).inDays == 0){
                     if(d1 == d2){
                       status = "Current";
                       color = Colors.green;
                     }
-                    else{
+                  }
+                  else if(snapshot.data.timeOccur.isAfter(DateTime.now())){
+                    isFollow = true;
                       status = "Coming";
                       color = Colors.red;
-                    }
+
                   }
                   return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,16 +129,23 @@ class _EventPostPageState extends State<EventPostPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 10, top: 10, right: 10),
-                          child: Text(
-                            snapshot.data.name,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                            children: <Widget>[
+                              Text(
+                                snapshot.data.name,
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Icon(Icons.notifications)
+                            ],
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 10.0, top: 5.0),
+                          padding: const EdgeInsets.only(left: 10.0, top: 5.0, right: 40.0, bottom: 10),
                           child: Material(color: color,
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             child: Padding(
@@ -142,7 +154,6 @@ class _EventPostPageState extends State<EventPostPage> {
                             ),
                           ),
                         ),
-
 
                         Padding(
                           padding: const EdgeInsets.only(left: 10, right: 10),
@@ -165,7 +176,7 @@ class _EventPostPageState extends State<EventPostPage> {
                                 model: new FollowViewModel(),
                                 child: Column(
                                   children: <Widget>[
-                                    followButton(map, widget.eventId),
+                                    isFollow ? followButton(map, widget.eventId) : Container(),
                                     followEventState(),
                                   ],
                                 ),
@@ -174,7 +185,7 @@ class _EventPostPageState extends State<EventPostPage> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 10),
+                          padding: const EdgeInsets.only(left: 10.0, right: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -190,9 +201,9 @@ class _EventPostPageState extends State<EventPostPage> {
                               ),
                               Text(snapshot.data.follower.toString() + " followers")
                             ],
-
                           ),
                         ),
+                        groupCreate(snapshot.data.group),
                         Container(
                           padding: EdgeInsets.only(left: 10, right: 10),
                           margin: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
@@ -221,6 +232,36 @@ class _EventPostPageState extends State<EventPostPage> {
       }
     );
   }
+
+  Widget groupCreate(GroupDTO dto){
+    return Padding(
+      padding: const EdgeInsets.only(left: 10.0),
+      child: Row(
+        children: <Widget>[
+          Text("Created by: "),
+          FlatButton(
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => GroupPage(dto.id) ));
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                ClipOval(
+                  child: Image(
+                    image: NetworkImage(dto.imageUrl),
+                    height: 30,
+                    width: 30,
+                  ),
+                ),
+                SizedBox(width: 5,),
+                Text(dto.name, style: TextStyle(color: Colors.blue),)
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+      }
 
   Widget followButton(Map<String, dynamic> map, int id){
     List<int> listFollowGroup = new List<int>();
@@ -281,7 +322,7 @@ class _EventPostPageState extends State<EventPostPage> {
             return Column(
               children: <Widget>[
                 for (PostDTO dto in snapshot.data)
-                  Padding(
+                  Container(
                     padding: new EdgeInsets.symmetric(
                         vertical: 5.0, horizontal: 16.0),
                     child: new Card(
@@ -291,12 +332,12 @@ class _EventPostPageState extends State<EventPostPage> {
                       ),
                       child: InkWell(
                         onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(dto.id) ));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => PostPage(dto.id, widget.eventId) ));
                         },
                         child: new Column(
                           children: <Widget>[
                             new ClipRRect(
-                              child: new Image.network(dto.imageUrl),
+                              child: new Image.network(dto.imageUrl, fit: BoxFit.fill,),
                               borderRadius: BorderRadius.only(
                                   topLeft: new Radius.circular(16.0),
                                   topRight: new Radius.circular(16.0)),
@@ -304,7 +345,12 @@ class _EventPostPageState extends State<EventPostPage> {
                             new Padding(
                               padding: new EdgeInsets.all(16.0),
                               child: new Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Text(DateFormat("dd/MM/yyyy hh:mm a").format(dto.createDate)),
+                                  ),
                                   Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(

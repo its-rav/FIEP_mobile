@@ -1,6 +1,8 @@
+import 'package:fiepapp/API/api_exception.dart';
 import 'package:fiepapp/API/api_helper.dart';
 import 'package:fiepapp/Model/EventDTO.dart';
 import 'package:fiepapp/Model/GroupDTO.dart';
+import 'package:fiepapp/Model/GroupWithPage.dart';
 
 class GroupDAO {
   Future<GroupDTO> getGroup(int groupID) async {
@@ -35,14 +37,36 @@ class GroupDAO {
     return null;
   }
 
-  Future<List<GroupDTO>> getAllGroup() async{
+  Future<List<GroupDTO>> get5Group() async{
     ApiHelper api = new ApiHelper();
-    Map<String, dynamic> json = await api.get("groups");
+    Map<String, dynamic> json = await api.get("groups?pagesize=5&isDesc=true&sortby=0");
     if(json['data'] != null){
       var eventJson = json['data'] as List;
       return eventJson.map((e) => GroupDTO.fromJson(e)).toList();
     }
     return null;
+  }
+
+  Future<GroupWithPage> getGroupBy(bool isDecs) async{
+    ApiHelper api = new ApiHelper();
+    Map<String, dynamic> json = await api.get("groups?pagesize=5&isDesc=$isDecs&sortby=0");
+    if(json != null){
+      return GroupWithPage.fromJson(json);
+    }
+    return null;
+  }
+
+  Future<GroupWithPage> addGroupBy(int page, bool isDecs) async{
+    ApiHelper api = new ApiHelper();
+    try{
+      Map<String, dynamic> json = await api.get("groups?pagesize=5&pagenumber=$page&isDesc=$isDecs&sortby=0");
+      if(json != null){
+        return GroupWithPage.fromJson(json);
+      }
+      return null;
+    } on BadRequestException{
+      return new GroupWithPage(null, 0, 0);
+    }
   }
 
  Future<int> followGroup(String userId, int id) async{
