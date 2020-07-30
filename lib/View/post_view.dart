@@ -171,7 +171,7 @@ class _EventPostPageState extends State<PostPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
+                  snapshot.data.imageUrl != null ? Container(
                     decoration: BoxDecoration(
                         border: Border.all(width: 2.0, color: Colors.grey),
                         shape: BoxShape.circle),
@@ -182,7 +182,7 @@ class _EventPostPageState extends State<PostPage> {
                         width: 40,
                       ),
                     ),
-                  ),
+                  ) : Container(),
                   SizedBox(width: 10,),
                   Flexible(child: Text(snapshot.data.name, style: TextStyle(color: Colors.blue, fontSize: 23),))
                 ],
