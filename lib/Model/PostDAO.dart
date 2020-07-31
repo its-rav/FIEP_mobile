@@ -42,4 +42,14 @@ class PostDAO{
     return 0;
   }
 
+  Future<int> updateComment(String id, String content) async{
+    ApiHelper api = new ApiHelper();
+    Map<String, dynamic> map ={'content' : content};
+    Map<String, dynamic> json = await api.patch("comments/$id", map);
+    if(json != null){
+      return 1;
+    }
+    return 0;
+  }
+
 }

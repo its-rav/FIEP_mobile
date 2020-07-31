@@ -325,6 +325,24 @@ class _EventPostPageState extends State<PostPage> {
                                   ),
 
                                   secondaryActions: <Widget>[
+                                    IconSlideAction(
+                                        caption: 'Edit',
+                                        color: Colors.blue,
+                                        icon: Icons.edit,
+                                        onTap: () async {
+                                          String text = await showEditText(dto.content, context);
+                                          if(text != dto.content){
+                                            alertNoti(context, "Please wait", CircularProgressIndicator());
+                                            int result = await postDao.updateComment(dto.id, text);
+                                            if(result > 0){
+                                              setState(() {
+                                                _listData = postDao.getComments(widget.postId);
+                                              });
+                                            }
+                                            Navigator.of(context, rootNavigator: true).pop();
+                                          }
+                                        }
+                                    ),
                                 IconSlideAction(
                                 caption: 'Delete',
                                     color: Colors.red,
@@ -380,6 +398,65 @@ class _EventPostPageState extends State<PostPage> {
             );
           }
         });
+  }
+
+  Future<String> showEditText(String text, BuildContext context) async {
+    GlobalKey<FormState> golbal = new GlobalKey<FormState>();
+    String newText = text;
+    await showDialog( context: context, builder: (BuildContext context) {
+      return Dialog(
+        child: Form(
+          key: golbal,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  maxLines: null,
+                  initialValue: text,
+                  validator: (value) {
+                    if(value.trim().isEmpty){
+                      return "Text is not empty";
+                    }
+                  },
+                  onSaved: (newValue) {
+                    newText = newValue;
+                  },
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  FlatButton(
+                    splashColor: Colors.blue,
+                    child: Text("Save",
+                        style: TextStyle(color: Colors.blue)),
+                    onPressed: (){
+                      if(golbal.currentState.validate()){
+                        golbal.currentState.save();
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                  FlatButton(
+                    splashColor: Colors.blue,
+                    child: Text("Cancel",
+                        style: TextStyle(color: Colors.blue)),
+                    onPressed: (){
+                        Navigator.pop(context);
+                    },
+                  ),
+                ],
+              )
+            ],
+
+          ),
+        ),
+      );
+    },);
+    return newText;
   }
 
 }

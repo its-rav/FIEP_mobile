@@ -8,7 +8,7 @@ class ApiHelper {
 
 
 
-  final String _baseUrl = "http://192.168.1.104:8085/api/";
+  final String _baseUrl = "https://fiep-api.azurewebsites.net/api/";
 
   Future<dynamic> get(String url) async {
     var responseJson;

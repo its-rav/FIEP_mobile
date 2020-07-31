@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PushNotificationService {
   PushNotificationService._();
@@ -23,8 +25,15 @@ class PushNotificationService {
       _fcm.configure(
         //Called when the app is in the foreground and we receive a push notification
         onMessage: (Map<String, dynamic> message) async {
+          SharedPreferences sp = await SharedPreferences.getInstance();
+          String user = sp.getString('USER');
+          if(user != null){
+            Map<String, dynamic> account = jsonDecode(user);
+            
+          }
           print('onMessage: $message');
           showDialog(context: context, builder: (BuildContext context) {
+
             return AlertDialog(
               title: Text(message['notification']['title']),
               content: Text(message['notification']['body']),
